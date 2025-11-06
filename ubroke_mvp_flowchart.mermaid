@@ -1,0 +1,72 @@
+graph TD
+    Start([User Opens App]) --> CheckAuth{User Logged In?}
+    CheckAuth -->|No| Onboard["🔵 Onboarding Screen<br/>Welcome + Quick Context"]
+    CheckAuth -->|Yes| Dashboard["🔵 Dashboard/Home<br/>Last Upload Summary"]
+    
+    Onboard --> OnboardStep1["Ask: Income Range<br/>Employment Type<br/>Main Financial Goal"]
+    OnboardStep1 --> OnboardCTA["CTA: Upload Documents"]
+    OnboardCTA --> Upload
+    
+    Dashboard --> UserAction{User Action?}
+    UserAction -->|Upload More| Upload
+    UserAction -->|View Past Analysis| ViewHistory["Show Previous Uploads<br/>& Categorizations"]
+    UserAction -->|Ask Question| Chat
+    
+    ViewHistory --> Chat
+    
+    Upload["🔵 Upload Screen<br/>Drag & Drop / Camera / Browse"]
+    Upload --> FileValidation{Valid File?<br/>PDF/Image<br/>< 50MB}
+    
+    FileValidation -->|No| ErrorInvalid["❌ Error State<br/>File not supported<br/>Suggest: Try PDF or JPG"]
+    ErrorInvalid --> Upload
+    
+    FileValidation -->|Yes| Processing["🔵 Processing Screen<br/>Upload Success Message"]
+    Processing --> ParseStart["AI Begins Parsing<br/>Extract: Date, Amount, Category"]
+    
+    ParseStart --> ParseSpeed{Parsing Time?}
+    ParseSpeed -->|< 10s| FastParse["✅ Fast Path<br/>Show Results Immediately"]
+    ParseSpeed -->|10-15s| MediumParse["⏳ Medium Path<br/>Show Progress Bar<br/>75% → 90% → 100%"]
+    ParseSpeed -->|> 15s| SlowParse["📧 Slow Path<br/>Queue for Background<br/>Show: 'We'll email when ready'"]
+    
+    FastParse --> ParsingSuccess
+    MediumParse --> ParsingSuccess
+    SlowParse --> BackgroundQueue["Background Processing<br/>Send Notification When Done"]
+    BackgroundQueue --> End1([User Leaves App])
+    
+    ParsingSuccess{Parse Successful?}
+    
+    ParsingSuccess -->|Yes| Results["🔵 Results Screen<br/>Expense Breakdown"]
+    ParsingSuccess -->|Failed| ErrorParse["❌ Parse Error<br/>'Couldn't read this doc<br/>Try uploading a clearer image'"]
+    ErrorParse --> Upload
+    
+    Results --> ResultsDisplay["Show:<br/>📊 Category Breakdown<br/>💰 Total Expenses<br/>📈 Top 3 Categories<br/>🎯 Insights"]
+    ResultsDisplay --> ResultsActions{User Next Action?}
+    
+    ResultsActions -->|Ask Question| Chat["🔵 Chat Screen<br/>'Ask me anything'"]
+    ResultsActions -->|Upload Another| Upload
+    ResultsActions -->|View Dashboard| Dashboard
+    
+    Chat --> ChatContext["AI Has Context:<br/>Their Expenses<br/>Their Income Range<br/>Their Employment Type"]
+    ChatContext --> ChatExamples["Example Questions:<br/>💬 'Why am I spending so much on food?'<br/>💬 'Can I cut my subscriptions?'<br/>💬 'How do I save more?'"]
+    ChatExamples --> ChatInput["User Types Question"]
+    ChatInput --> ChatResponse["AI Responds With:<br/>📌 Specific Insights<br/>📌 Actionable Tips<br/>📌 Reference to Their Data"]
+    
+    ChatResponse --> ChatFollowUp{Continue Chat?}
+    ChatFollowUp -->|Yes| ChatInput
+    ChatFollowUp -->|No| Dashboard
+    
+    style Start fill:#f0f0f0
+    style Onboard fill:#e3f2fd
+    style Dashboard fill:#e3f2fd
+    style Upload fill:#e3f2fd
+    style Processing fill:#fff9c4
+    style Results fill:#e3f2fd
+    style Chat fill:#e3f2fd
+    style ErrorInvalid fill:#ffebee
+    style ErrorParse fill:#ffebee
+    style FastParse fill:#c8e6c9
+    style MediumParse fill:#fff9c4
+    style SlowParse fill:#ffe0b2
+    style ParsingSuccess fill:#f0f0f0
+    style FileValidation fill:#f0f0f0
+    style ParseSpeed fill:#f0f0f0
