@@ -1,9 +1,16 @@
 import SwiftUI
 
+enum SortOption: String, CaseIterable {
+    case amount = "Amount"
+    case percentage = "Percentage"
+    case name = "Name"
+}
+
 struct ResultsView: View {
     let navigateToUpload: () -> Void
+    @State private var selectedSort: SortOption = .amount
 
-    let categories = [
+    let allCategories = [
         CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, emoji: "🏠", color: .blue, alert: false),
         CategoryData(name: "Food & Delivery", amount: 8500, percentage: 18, emoji: "🍕", color: .orange, alert: true),
         CategoryData(name: "Entertainment", amount: 4200, percentage: 9, emoji: "🎮", color: .purple, alert: false),
@@ -12,6 +19,17 @@ struct ResultsView: View {
         CategoryData(name: "Health & Wellness", amount: 1500, percentage: 3, emoji: "💊", color: .teal, alert: false),
         CategoryData(name: "Other", amount: 2500, percentage: 6, emoji: "📦", color: .gray, alert: false)
     ]
+
+    var sortedCategories: [CategoryData] {
+        switch selectedSort {
+        case .amount:
+            return allCategories.sorted { $0.amount > $1.amount }
+        case .percentage:
+            return allCategories.sorted { $0.percentage > $1.percentage }
+        case .name:
+            return allCategories.sorted { $0.name < $1.name }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -50,8 +68,17 @@ struct ResultsView: View {
                 }
 
                 // Categories Section
-                Section(header: Text("BY CATEGORY")) {
-                    ForEach(categories) { category in
+                Section(header:
+                    HStack {
+                        Text("BY CATEGORY")
+                        Spacer()
+                        Text("Sorted by: \(selectedSort.rawValue)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .textCase(.none)
+                    }
+                ) {
+                    ForEach(sortedCategories) { category in
                         CategoryListRow(category: category)
                     }
                 }
@@ -78,6 +105,30 @@ struct ResultsView: View {
             .navigationTitle("Ubroke")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Picker("Sort by", selection: $selectedSort) {
+                            ForEach(SortOption.allCases, id: \.self) { option in
+                                HStack {
+                                    Text(option.rawValue)
+                                    if selectedSort == option {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                                .tag(option)
+                            }
+                        }
+                        .pickerStyle(.inline)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.up.arrow.down")
+                            Text("Sort")
+                                .font(.subheadline)
+                        }
+                        .foregroundColor(.blue)
+                    }
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: navigateToUpload) {
                         Image(systemName: "plus.circle.fill")

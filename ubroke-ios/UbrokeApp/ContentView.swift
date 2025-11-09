@@ -58,8 +58,8 @@ struct MainTabView: View {
                 }
                 .tag(0)
 
-            // Ask AI Tab
-            ChatView()
+            // Ask AI Tab - Shows list of chats
+            ChatListView()
                 .tabItem {
                     Label("Ask AI", systemImage: "message.fill")
                 }

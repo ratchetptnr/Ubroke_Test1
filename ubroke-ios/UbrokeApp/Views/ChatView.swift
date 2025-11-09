@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ChatView: View {
+    let threadTitle: String
+    @Environment(\.dismiss) private var dismiss
     @State private var messageText = ""
     @State private var messages: [ChatMessage] = [
         ChatMessage(
@@ -17,107 +19,106 @@ struct ChatView: View {
     ]
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Messages
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            // Header
-                            VStack(spacing: 8) {
-                                Text("💬 Ask Me Anything About")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                Text("Your Money")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                            }
-                            .padding(.top, 24)
+        VStack(spacing: 0) {
+            // Messages
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 16) {
+                        // Header
+                        VStack(spacing: 8) {
+                            Text("💬 Ask Me Anything About")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            Text("Your Money")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                        }
+                        .padding(.top, 24)
 
-                            // Messages
-                            ForEach(messages) { message in
-                                MessageBubble(message: message)
-                                    .id(message.id)
-                            }
+                        // Messages
+                        ForEach(messages) { message in
+                            MessageBubble(message: message)
+                                .id(message.id)
+                        }
 
-                            // Suggested questions (only show if first message)
-                            if messages.count == 1 {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("💡 Suggested questions:")
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.secondary)
-                                        .padding(.horizontal)
+                        // Suggested questions (only show if first message)
+                        if messages.count == 1 {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("💡 Suggested questions:")
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.secondary)
+                                    .padding(.horizontal)
 
-                                    ForEach(suggestedQuestions, id: \.self) { question in
-                                        Button(action: {
-                                            sendMessage(question)
-                                        }) {
-                                            Text(question)
-                                                .font(.caption)
-                                                .foregroundColor(.blue)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .padding()
-                                                .background(
-                                                    RoundedRectangle(cornerRadius: 12)
-                                                        .fill(.ultraThinMaterial)
-                                                )
-                                        }
-                                        .padding(.horizontal)
+                                ForEach(suggestedQuestions, id: \.self) { question in
+                                    Button(action: {
+                                        sendMessage(question)
+                                    }) {
+                                        Text(question)
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding()
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(.ultraThinMaterial)
+                                            )
                                     }
+                                    .padding(.horizontal)
                                 }
-                                .padding(.top, 8)
                             }
+                            .padding(.top, 8)
+                        }
 
-                            Spacer()
-                                .frame(height: 100)
-                        }
-                    }
-                    .onChange(of: messages.count) { _ in
-                        if let lastMessage = messages.last {
-                            withAnimation {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                            }
-                        }
+                        Spacer()
+                            .frame(height: 100)
                     }
                 }
-                .background(
-                    LinearGradient(
-                        colors: [Color.blue.opacity(0.05), Color.white],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-
-                // Input area
-                VStack(spacing: 0) {
-                    Divider()
-
-                    HStack(spacing: 12) {
-                        TextField("Type your question...", text: $messageText)
-                            .textFieldStyle(.plain)
-                            .padding(12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.gray.opacity(0.1))
-                            )
-
-                        Button(action: {
-                            sendMessage(messageText)
-                        }) {
-                            Image(systemName: "arrow.up.circle.fill")
-                                .font(.system(size: 36))
-                                .foregroundColor(messageText.isEmpty ? .gray : .blue)
+                .onChange(of: messages.count) { _ in
+                    if let lastMessage = messages.last {
+                        withAnimation {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
-                        .disabled(messageText.isEmpty)
                     }
-                    .padding()
-                    .background(.ultraThinMaterial)
                 }
             }
-            .navigationTitle("Finance Chat")
-            .navigationBarTitleDisplayMode(.inline)
+            .background(
+                LinearGradient(
+                    colors: [Color.blue.opacity(0.05), Color.white],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+
+            // Input area
+            VStack(spacing: 0) {
+                Divider()
+
+                HStack(spacing: 12) {
+                    TextField("Type your question...", text: $messageText)
+                        .textFieldStyle(.plain)
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.gray.opacity(0.1))
+                        )
+
+                    Button(action: {
+                        sendMessage(messageText)
+                    }) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .font(.system(size: 36))
+                            .foregroundColor(messageText.isEmpty ? .gray : .blue)
+                    }
+                    .disabled(messageText.isEmpty)
+                }
+                .padding()
+                .background(.ultraThinMaterial)
+            }
         }
+        .navigationTitle(threadTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 
     func sendMessage(_ text: String) {
@@ -177,5 +178,7 @@ struct MessageBubble: View {
 }
 
 #Preview {
-    ChatView()
+    NavigationStack {
+        ChatView(threadTitle: "Food delivery spending")
+    }
 }
