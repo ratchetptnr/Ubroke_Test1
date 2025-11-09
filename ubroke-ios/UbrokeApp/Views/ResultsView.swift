@@ -14,6 +14,10 @@ struct ResultsView: View {
         CategoryData(name: "Other", amount: 2500, percentage: 6, emoji: "📦", color: .gray, alert: false)
     ]
 
+    var totalAmount: Int {
+        categories.reduce(0) { $0 + $1.amount }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Header
@@ -28,43 +32,78 @@ struct ResultsView: View {
 
             // List with Settings-style layout
             List {
-                // Total Section
+                // Total Amount & Segmented Bar Section (like iPhone Storage)
                 Section {
-                    VStack(spacing: 12) {
-                        HStack {
-                            Text("📊 Your Expense Breakdown")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            Spacer()
-                        }
-
-                        Text("January 2024")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        Divider()
-                            .padding(.vertical, 4)
-
+                    VStack(spacing: 16) {
+                        // Title and date
                         VStack(spacing: 4) {
-                            Text("Total Analyzed")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                            HStack {
+                                Text("Your Spending")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                Spacer()
+                            }
 
-                            Text("₹47,500")
-                                .font(.system(size: 36, weight: .bold))
-                                .foregroundColor(.blue)
+                            HStack {
+                                Text("January 2024")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+
+                        // Total amount
+                        HStack {
+                            Text("Total")
+                                .font(.body)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("₹\(totalAmount.formatted())")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
+
+                        // Segmented progress bar (like iPhone Storage)
+                        SegmentedProgressBar(categories: categories)
+                            .frame(height: 20)
+                            .cornerRadius(10)
+
+                        // Color legend
+                        VStack(spacing: 8) {
+                            ForEach(categories) { category in
+                                HStack(spacing: 12) {
+                                    // Color indicator
+                                    Circle()
+                                        .fill(category.color)
+                                        .frame(width: 12, height: 12)
+
+                                    // Category name
+                                    Text(category.emoji + " " + category.name)
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
+
+                                    Spacer()
+
+                                    // Amount and percentage
+                                    VStack(alignment: .trailing, spacing: 2) {
+                                        Text("₹\(category.amount.formatted())")
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                        Text("\(category.percentage)%")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+                        }
                     }
-                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .padding(.vertical, 8)
                 }
 
-                // Categories Section
-                Section(header: Text("BY CATEGORY")) {
+                // Detailed Breakdown Section
+                Section(header: Text("DETAILED BREAKDOWN")) {
                     ForEach(categories) { category in
-                        CategoryListRow(category: category)
+                        CategoryDetailRow(category: category)
                     }
                 }
 
@@ -75,7 +114,7 @@ struct ResultsView: View {
                         InsightRow(text: "Food delivery is 18% of your total spend — high! 🔴")
                         InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
                     }
-                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .padding(.vertical, 4)
                 }
 
                 // Action Buttons Section
@@ -128,6 +167,23 @@ struct ResultsView: View {
     }
 }
 
+// Segmented progress bar (like iPhone Storage bar)
+struct SegmentedProgressBar: View {
+    let categories: [CategoryData]
+
+    var body: some View {
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                ForEach(categories) { category in
+                    Rectangle()
+                        .fill(category.color)
+                        .frame(width: geometry.size.width * CGFloat(category.percentage) / 100)
+                }
+            }
+        }
+    }
+}
+
 struct CategoryData: Identifiable {
     let id = UUID()
     let name: String
@@ -138,11 +194,12 @@ struct CategoryData: Identifiable {
     let alert: Bool
 }
 
-struct CategoryListRow: View {
+// Detailed row for the breakdown section
+struct CategoryDetailRow: View {
     let category: CategoryData
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 0) {
             HStack {
                 HStack(spacing: 12) {
                     Text(category.emoji)
@@ -165,20 +222,6 @@ struct CategoryListRow: View {
                 }
             }
 
-            // Progress bar
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.gray.opacity(0.15))
-                        .frame(height: 6)
-
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(category.color)
-                        .frame(width: geometry.size.width * CGFloat(category.percentage) / 100, height: 6)
-                }
-            }
-            .frame(height: 6)
-
             if category.alert {
                 HStack {
                     Image(systemName: "exclamationmark.circle.fill")
@@ -189,6 +232,7 @@ struct CategoryListRow: View {
                         .foregroundColor(.orange)
                     Spacer()
                 }
+                .padding(.top, 8)
             }
         }
         .padding(.vertical, 4)
