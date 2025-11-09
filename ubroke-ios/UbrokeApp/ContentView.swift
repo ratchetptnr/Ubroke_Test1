@@ -23,16 +23,11 @@ struct ContentView: View {
                     )
                 case .processing:
                     ProcessingView(
-                        navigateToResults: { currentScreen = .results }
+                        navigateToResults: { currentScreen = .mainApp }
                     )
-                case .results:
-                    ResultsView(
-                        navigateToUpload: { currentScreen = .upload },
-                        navigateToChat: { currentScreen = .chat }
-                    )
-                case .chat:
-                    ChatView(
-                        navigateBack: { currentScreen = .results }
+                case .mainApp:
+                    MainTabView(
+                        navigateToUpload: { currentScreen = .upload }
                     )
                 }
             }
@@ -46,8 +41,32 @@ enum AppScreen {
     case profile
     case upload
     case processing
-    case results
-    case chat
+    case mainApp
+}
+
+// Main app with tab bar
+struct MainTabView: View {
+    let navigateToUpload: () -> Void
+    @State private var selectedTab = 0
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            // Home Tab
+            ResultsView(navigateToUpload: navigateToUpload)
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(0)
+
+            // Ask AI Tab
+            ChatView()
+                .tabItem {
+                    Label("Ask AI", systemImage: "message.fill")
+                }
+                .tag(1)
+        }
+        .navigationBarHidden(true)
+    }
 }
 
 #Preview {

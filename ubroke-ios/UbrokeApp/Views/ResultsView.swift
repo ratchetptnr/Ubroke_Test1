@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ResultsView: View {
     let navigateToUpload: () -> Void
-    let navigateToChat: () -> Void
 
     let categories = [
         CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, emoji: "🏠", color: .blue, alert: false),
@@ -15,18 +14,7 @@ struct ResultsView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            HStack {
-                Text("Ubroke")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-            .padding()
-            .background(Color(UIColor.systemBackground))
-
-            // List with Settings-style layout
+        NavigationStack {
             List {
                 // Total Section
                 Section {
@@ -77,42 +65,6 @@ struct ResultsView: View {
                     }
                     .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                 }
-
-                // Action Buttons Section
-                Section {
-                    HStack(spacing: 12) {
-                        Button(action: navigateToUpload) {
-                            HStack {
-                                Image(systemName: "arrow.up.doc.fill")
-                                    .font(.title3)
-                                Text("Upload More")
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue.opacity(0.1))
-                            .foregroundColor(.blue)
-                            .cornerRadius(10)
-                        }
-                        .buttonStyle(.plain)
-
-                        Button(action: navigateToChat) {
-                            HStack {
-                                Image(systemName: "message.fill")
-                                    .font(.title3)
-                                Text("Ask AI")
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                }
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
@@ -123,8 +75,18 @@ struct ResultsView: View {
                     endPoint: .bottom
                 )
             )
+            .navigationTitle("Ubroke")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: navigateToUpload) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
         }
-        .navigationBarHidden(true)
     }
 }
 
@@ -211,5 +173,5 @@ struct InsightRow: View {
 }
 
 #Preview {
-    ResultsView(navigateToUpload: {}, navigateToChat: {})
+    ResultsView(navigateToUpload: {})
 }

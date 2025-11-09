@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct ChatView: View {
-    let navigateBack: () -> Void
-
     @State private var messageText = ""
     @State private var messages: [ChatMessage] = [
         ChatMessage(
@@ -19,36 +17,8 @@ struct ChatView: View {
     ]
 
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [Color.blue.opacity(0.05), Color.white],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-
+        NavigationStack {
             VStack(spacing: 0) {
-                // Header
-                HStack {
-                    Button(action: navigateBack) {
-                        Image(systemName: "chevron.left")
-                            .font(.title3)
-                            .foregroundColor(.blue)
-                    }
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Finance Chat")
-                            .font(.headline)
-                        Text("Ask me anything about your money")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-                }
-                .padding()
-                .background(.ultraThinMaterial)
-
                 // Messages
                 ScrollViewReader { proxy in
                     ScrollView {
@@ -111,6 +81,13 @@ struct ChatView: View {
                         }
                     }
                 }
+                .background(
+                    LinearGradient(
+                        colors: [Color.blue.opacity(0.05), Color.white],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
 
                 // Input area
                 VStack(spacing: 0) {
@@ -138,8 +115,9 @@ struct ChatView: View {
                     .background(.ultraThinMaterial)
                 }
             }
+            .navigationTitle("Finance Chat")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationBarHidden(true)
     }
 
     func sendMessage(_ text: String) {
@@ -199,5 +177,5 @@ struct MessageBubble: View {
 }
 
 #Preview {
-    ChatView(navigateBack: {})
+    ChatView()
 }
