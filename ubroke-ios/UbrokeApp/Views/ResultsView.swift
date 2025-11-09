@@ -15,129 +15,114 @@ struct ResultsView: View {
     ]
 
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [Color.blue.opacity(0.1), Color.white],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                Text("Ubroke")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
+            .padding()
+            .background(Color(UIColor.systemBackground))
 
-            VStack(spacing: 0) {
-                // Header
-                HStack {
-                    Text("Ubroke")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-                .padding()
-
-                ScrollView {
-                    VStack(spacing: 20) {
-                        // Total amount card
-                        GlassCard {
-                            VStack(spacing: 12) {
-                                HStack {
-                                    Text("📊 Your Expense Breakdown")
-                                        .font(.title3)
-                                        .fontWeight(.bold)
-                                    Spacer()
-                                }
-
-                                Text("January 2024")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                Divider()
-                                    .padding(.vertical, 8)
-
-                                VStack(spacing: 8) {
-                                    Text("Total Analyzed")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-
-                                    Text("₹47,500")
-                                        .font(.system(size: 42, weight: .bold))
-                                        .foregroundColor(.blue)
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.blue.opacity(0.1))
-                                )
-                            }
+            // List with Settings-style layout
+            List {
+                // Total Section
+                Section {
+                    VStack(spacing: 12) {
+                        HStack {
+                            Text("📊 Your Expense Breakdown")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            Spacer()
                         }
-                        .padding(.horizontal)
 
-                        // Categories card
-                        GlassCard {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("📈 BY CATEGORY")
-                                    .font(.headline)
+                        Text("January 2024")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                                ForEach(categories) { category in
-                                    CategoryRow(category: category)
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
+                        Divider()
+                            .padding(.vertical, 4)
 
-                        // Insights card
-                        GlassCard {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("💡 INSIGHTS")
-                                    .font(.headline)
+                        VStack(spacing: 4) {
+                            Text("Total Analyzed")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
 
-                                InsightRow(text: "Your top spend: Rent (52%)")
-                                InsightRow(text: "Food delivery is 18% of your total spend — high! 🔴")
-                                InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
-                            }
-                        }
-                        .padding(.horizontal)
-
-                        // Action buttons
-                        HStack(spacing: 12) {
-                            Button(action: navigateToUpload) {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "arrow.up.doc.fill")
-                                        .font(.title2)
-                                    Text("Upload More")
-                                        .font(.subheadline)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(.ultraThinMaterial)
-                                )
+                            Text("₹47,500")
+                                .font(.system(size: 36, weight: .bold))
                                 .foregroundColor(.blue)
-                            }
-
-                            Button(action: navigateToChat) {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "message.fill")
-                                        .font(.title2)
-                                    Text("Ask AI")
-                                        .font(.subheadline)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                            }
                         }
-                        .padding(.horizontal)
-
-                        Spacer()
-                            .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
                     }
-                    .padding(.top)
+                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                }
+
+                // Categories Section
+                Section(header: Text("BY CATEGORY")) {
+                    ForEach(categories) { category in
+                        CategoryListRow(category: category)
+                    }
+                }
+
+                // Insights Section
+                Section(header: Text("INSIGHTS")) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        InsightRow(text: "Your top spend: Rent (52%)")
+                        InsightRow(text: "Food delivery is 18% of your total spend — high! 🔴")
+                        InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                }
+
+                // Action Buttons Section
+                Section {
+                    HStack(spacing: 12) {
+                        Button(action: navigateToUpload) {
+                            HStack {
+                                Image(systemName: "arrow.up.doc.fill")
+                                    .font(.title3)
+                                Text("Upload More")
+                                    .fontWeight(.medium)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue.opacity(0.1))
+                            .foregroundColor(.blue)
+                            .cornerRadius(10)
+                        }
+                        .buttonStyle(.plain)
+
+                        Button(action: navigateToChat) {
+                            HStack {
+                                Image(systemName: "message.fill")
+                                    .font(.title3)
+                                Text("Ask AI")
+                                    .fontWeight(.medium)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(
+                LinearGradient(
+                    colors: [Color.blue.opacity(0.05), Color.white],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
         }
         .navigationBarHidden(true)
     }
@@ -153,54 +138,60 @@ struct CategoryData: Identifiable {
     let alert: Bool
 }
 
-struct CategoryRow: View {
+struct CategoryListRow: View {
     let category: CategoryData
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             HStack {
-                Text(category.emoji)
-                    .font(.title3)
+                HStack(spacing: 12) {
+                    Text(category.emoji)
+                        .font(.title2)
 
-                Text(category.name)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    Text(category.name)
+                        .font(.body)
+                }
 
                 Spacer()
 
-                Text("₹\(category.amount.formatted())")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-            }
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("₹\(category.amount.formatted())")
+                        .font(.body)
+                        .fontWeight(.semibold)
 
-            HStack(spacing: 8) {
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 8)
-
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(category.color)
-                            .frame(width: geometry.size.width * CGFloat(category.percentage) / 100, height: 8)
-                    }
+                    Text("\(category.percentage)%")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                .frame(height: 8)
-
-                Text("\(category.percentage)%")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(width: 40, alignment: .trailing)
             }
+
+            // Progress bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.15))
+                        .frame(height: 6)
+
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(category.color)
+                        .frame(width: geometry.size.width * CGFloat(category.percentage) / 100, height: 6)
+                }
+            }
+            .frame(height: 6)
 
             if category.alert {
-                Text("High spending 🔴")
-                    .font(.caption)
-                    .foregroundColor(.orange)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 32)
+                HStack {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                    Text("High spending")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                    Spacer()
+                }
             }
         }
+        .padding(.vertical, 4)
     }
 }
 
@@ -209,10 +200,11 @@ struct InsightRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            Text("•")
+            Image(systemName: "lightbulb.fill")
                 .font(.caption)
+                .foregroundColor(.yellow)
             Text(text)
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundColor(.secondary)
         }
     }
