@@ -74,12 +74,19 @@ struct MainTabView: View {
                 }
                 .tag(0)
 
+            // Transactions Tab
+            TransactionsView()
+                .tabItem {
+                    Label("Transactions", systemImage: "list.bullet.rectangle.fill")
+                }
+                .tag(1)
+
             // Ask AI Tab - Shows list of chats
             ChatListView()
                 .tabItem {
                     Label("Ask AI", systemImage: "message.fill")
                 }
-                .tag(1)
+                .tag(2)
         }
     }
 }
