@@ -3,19 +3,85 @@ import SwiftUI
 struct ResultsView: View {
     let navigateToUpload: () -> Void
 
-    let categories = [
-        CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, symbolName: "house.fill", color: .blue, alert: false),
-        CategoryData(name: "Food & Delivery", amount: 8500, percentage: 18, symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange, alert: true),
-        CategoryData(name: "Entertainment", amount: 4200, percentage: 9, symbolName: "tv.fill", color: .purple, alert: false),
-        CategoryData(name: "Subscriptions", amount: 3800, percentage: 8, symbolName: "rectangle.stack.fill", color: .pink, alert: false),
-        CategoryData(name: "Transport", amount: 2000, percentage: 4, symbolName: "car.fill", color: .green, alert: false),
-        CategoryData(name: "Health & Wellness", amount: 1500, percentage: 3, symbolName: "heart.text.square.fill", color: .teal, alert: false),
-        CategoryData(name: "Other", amount: 2500, percentage: 6, symbolName: "square.grid.2x2.fill", color: .gray, alert: false)
+    @State private var selectedDate = Date()
+    @State private var showingMonthPicker = false
+
+    // Sample data for multiple months
+    let monthlyData: [String: MonthData] = [
+        "2024-11": MonthData(
+            total: 47500,
+            categories: [
+                CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, symbolName: "house.fill", color: .blue, alert: false),
+                CategoryData(name: "Food & Delivery", amount: 8500, percentage: 18, symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange, alert: true),
+                CategoryData(name: "Entertainment", amount: 4200, percentage: 9, symbolName: "tv.fill", color: .purple, alert: false),
+                CategoryData(name: "Subscriptions", amount: 3800, percentage: 8, symbolName: "rectangle.stack.fill", color: .pink, alert: false),
+                CategoryData(name: "Transport", amount: 2000, percentage: 4, symbolName: "car.fill", color: .green, alert: false),
+                CategoryData(name: "Health & Wellness", amount: 1500, percentage: 3, symbolName: "heart.text.square.fill", color: .teal, alert: false),
+                CategoryData(name: "Other", amount: 2500, percentage: 6, symbolName: "square.grid.2x2.fill", color: .gray, alert: false)
+            ]
+        ),
+        "2024-10": MonthData(
+            total: 52300,
+            categories: [
+                CategoryData(name: "Rent & Housing", amount: 25000, percentage: 48, symbolName: "house.fill", color: .blue, alert: false),
+                CategoryData(name: "Food & Delivery", amount: 12000, percentage: 23, symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange, alert: true),
+                CategoryData(name: "Entertainment", amount: 6300, percentage: 12, symbolName: "tv.fill", color: .purple, alert: false),
+                CategoryData(name: "Subscriptions", amount: 3800, percentage: 7, symbolName: "rectangle.stack.fill", color: .pink, alert: false),
+                CategoryData(name: "Transport", amount: 2500, percentage: 5, symbolName: "car.fill", color: .green, alert: false),
+                CategoryData(name: "Health & Wellness", amount: 1200, percentage: 2, symbolName: "heart.text.square.fill", color: .teal, alert: false),
+                CategoryData(name: "Other", amount: 1500, percentage: 3, symbolName: "square.grid.2x2.fill", color: .gray, alert: false)
+            ]
+        ),
+        "2024-09": MonthData(
+            total: 43200,
+            categories: [
+                CategoryData(name: "Rent & Housing", amount: 25000, percentage: 58, symbolName: "house.fill", color: .blue, alert: false),
+                CategoryData(name: "Food & Delivery", amount: 6500, percentage: 15, symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange, alert: false),
+                CategoryData(name: "Entertainment", amount: 3200, percentage: 7, symbolName: "tv.fill", color: .purple, alert: false),
+                CategoryData(name: "Subscriptions", amount: 3800, percentage: 9, symbolName: "rectangle.stack.fill", color: .pink, alert: false),
+                CategoryData(name: "Transport", amount: 1800, percentage: 4, symbolName: "car.fill", color: .green, alert: false),
+                CategoryData(name: "Health & Wellness", amount: 1400, percentage: 3, symbolName: "heart.text.square.fill", color: .teal, alert: false),
+                CategoryData(name: "Other", amount: 1500, percentage: 4, symbolName: "square.grid.2x2.fill", color: .gray, alert: false)
+            ]
+        )
     ]
+
+    var currentMonthKey: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        return formatter.string(from: selectedDate)
+    }
+
+    var currentMonthData: MonthData {
+        monthlyData[currentMonthKey] ?? MonthData(total: 0, categories: [])
+    }
+
+    var formattedMonth: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: selectedDate)
+    }
 
     var body: some View {
         NavigationStack {
             List {
+                // Month Selector
+                Section {
+                    Button(action: { showingMonthPicker = true }) {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.blue)
+                            Text(formattedMonth)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
                 // Total Section
                 Section {
                     VStack(spacing: 16) {
@@ -25,18 +91,11 @@ struct ResultsView: View {
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
 
-                                Text("₹47,500")
+                                Text("₹\(currentMonthData.total.formatted())")
                                     .font(.system(size: 40, weight: .bold, design: .rounded))
                                     .foregroundColor(.primary)
                             }
 
-                            Spacer()
-                        }
-
-                        HStack {
-                            Text("January 2024")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
                             Spacer()
                         }
                     }
@@ -45,7 +104,7 @@ struct ResultsView: View {
 
                 // Categories Section
                 Section(header: Text("BY CATEGORY")) {
-                    ForEach(categories) { category in
+                    ForEach(currentMonthData.categories) { category in
                         CategoryListRow(category: category)
                     }
                 }
@@ -74,7 +133,75 @@ struct ResultsView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingMonthPicker) {
+                MonthPickerView(selectedDate: $selectedDate, availableMonths: Array(monthlyData.keys.sorted().reversed()))
+            }
         }
+    }
+}
+
+struct MonthData {
+    let total: Int
+    let categories: [CategoryData]
+}
+
+struct MonthPickerView: View {
+    @Binding var selectedDate: Date
+    let availableMonths: [String]
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(availableMonths, id: \.self) { monthKey in
+                    Button(action: {
+                        if let date = dateFromKey(monthKey) {
+                            selectedDate = date
+                            dismiss()
+                        }
+                    }) {
+                        HStack {
+                            Text(formattedMonthFromKey(monthKey))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if isSameMonth(monthKey: monthKey, date: selectedDate) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Month")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    func dateFromKey(_ key: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        return formatter.date(from: key)
+    }
+
+    func formattedMonthFromKey(_ key: String) -> String {
+        guard let date = dateFromKey(key) else { return key }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date)
+    }
+
+    func isSameMonth(monthKey: String, date: Date) -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        return formatter.string(from: date) == monthKey
     }
 }
 
