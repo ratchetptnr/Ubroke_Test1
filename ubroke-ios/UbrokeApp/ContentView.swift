@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var currentScreen: AppScreen = .onboarding
+    @State private var hasCompletedOnboarding = false
+    @State private var previousScreen: AppScreen = .onboarding
 
     var body: some View {
         Group {
@@ -9,6 +11,7 @@ struct ContentView: View {
             case .onboarding:
                 NavigationStack {
                     OnboardingView(navigateToUpload: {
+                        previousScreen = .onboarding
                         currentScreen = .upload
                     })
                     .navigationBarHidden(true)
@@ -16,23 +19,37 @@ struct ContentView: View {
             case .upload:
                 NavigationStack {
                     UploadView(
-                        navigateBack: { currentScreen = .onboarding },
+                        navigateBack: {
+                            currentScreen = previousScreen
+                        },
                         navigateToProcessing: { currentScreen = .processing }
                     )
                 }
             case .processing:
                 NavigationStack {
                     ProcessingView(
-                        navigateToResults: { currentScreen = .mainApp }
+                        navigateToResults: {
+                            hasCompletedOnboarding = true
+                            currentScreen = .mainApp
+                        }
                     )
                 }
             case .mainApp:
                 MainTabView(
-                    navigateToUpload: { currentScreen = .upload }
+                    navigateToUpload: {
+                        previousScreen = .mainApp
+                        currentScreen = .upload
+                    }
                 )
             }
         }
         .animation(.easeInOut, value: currentScreen)
+        .onAppear {
+            // Skip onboarding if already completed
+            if hasCompletedOnboarding {
+                currentScreen = .mainApp
+            }
+        }
     }
 }
 
