@@ -4,31 +4,35 @@ struct ContentView: View {
     @State private var currentScreen: AppScreen = .onboarding
 
     var body: some View {
-        NavigationStack {
-            Group {
-                switch currentScreen {
-                case .onboarding:
+        Group {
+            switch currentScreen {
+            case .onboarding:
+                NavigationStack {
                     OnboardingView(navigateToUpload: {
                         currentScreen = .upload
                     })
                     .navigationBarHidden(true)
-                case .upload:
+                }
+            case .upload:
+                NavigationStack {
                     UploadView(
                         navigateBack: { currentScreen = .onboarding },
                         navigateToProcessing: { currentScreen = .processing }
                     )
-                case .processing:
+                }
+            case .processing:
+                NavigationStack {
                     ProcessingView(
                         navigateToResults: { currentScreen = .mainApp }
                     )
-                case .mainApp:
-                    MainTabView(
-                        navigateToUpload: { currentScreen = .upload }
-                    )
                 }
+            case .mainApp:
+                MainTabView(
+                    navigateToUpload: { currentScreen = .upload }
+                )
             }
-            .animation(.easeInOut, value: currentScreen)
         }
+        .animation(.easeInOut, value: currentScreen)
     }
 }
 
@@ -60,7 +64,6 @@ struct MainTabView: View {
                 }
                 .tag(1)
         }
-        .navigationBarHidden(true)
     }
 }
 
