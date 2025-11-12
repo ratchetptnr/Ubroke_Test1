@@ -45,12 +45,10 @@ struct ChatListView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        // Start new chat - for now just add dummy
-                        startNewChat()
-                    }) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.title3)
+                    Button(action: startNewChat) {
+                        Image(systemName: "plus")
+                            .font(.body)
+                            .fontWeight(.semibold)
                     }
                 }
             }
