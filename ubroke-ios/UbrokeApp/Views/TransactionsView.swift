@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct TransactionsView: View {
+    @State private var selectedDate = Date()
+    @State private var showingMonthPicker = false
+
     let transactions = [
         // November 2024 - Recent transactions
         TransactionData(name: "Swiggy Order", category: "Food & Delivery", amount: -450, type: .debit, date: Date(), symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange),
@@ -29,17 +32,51 @@ struct TransactionsView: View {
         TransactionData(name: "Salary Credit", category: "Income", amount: 85000, type: .credit, date: createDate(year: 2024, month: 9, day: 1), symbolName: "banknote.fill", color: .green),
     ]
 
+    var currentMonthKey: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: selectedDate)
+    }
+
+    var formattedMonth: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: selectedDate)
+    }
+
+    var currentMonthTransactions: [TransactionData] {
+        groupedByMonth[currentMonthKey] ?? []
+    }
+
+    var availableMonths: [String] {
+        Array(groupedByMonth.keys.sorted().reversed())
+    }
+
     var body: some View {
         NavigationStack {
             List {
-                ForEach(groupedByMonth.keys.sorted().reversed(), id: \.self) { monthKey in
-                    Section(header: Text(monthKey).font(.title3).fontWeight(.semibold).foregroundColor(.primary).textCase(nil)) {
-                        ForEach(groupedByDayInMonth(monthKey: monthKey).keys.sorted(by: { sortDaySections($0, $1) }), id: \.self) { daySection in
-                            Section(header: Text(daySection)) {
-                                ForEach(groupedByDayInMonth(monthKey: monthKey)[daySection] ?? []) { transaction in
-                                    TransactionRow(transaction: transaction)
-                                }
-                            }
+                // Month Selector
+                Section {
+                    Button(action: { showingMonthPicker = true }) {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.blue)
+                            Text(formattedMonth)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                // Transactions grouped by day within selected month
+                ForEach(groupedByDayInCurrentMonth.keys.sorted(by: { sortDaySections($0, $1) }), id: \.self) { daySection in
+                    Section(header: Text(daySection)) {
+                        ForEach(groupedByDayInCurrentMonth[daySection] ?? []) { transaction in
+                            TransactionRow(transaction: transaction)
                         }
                     }
                 }
@@ -47,6 +84,9 @@ struct TransactionsView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Transactions")
             .navigationBarTitleDisplayMode(.large)
+            .sheet(isPresented: $showingMonthPicker) {
+                TransactionMonthPickerView(selectedDate: $selectedDate, availableMonths: availableMonths)
+            }
         }
     }
 
@@ -59,13 +99,9 @@ struct TransactionsView: View {
         }
     }
 
-    // Group transactions within a specific month by day sections
-    func groupedByDayInMonth(monthKey: String) -> [String: [TransactionData]] {
-        guard let monthTransactions = groupedByMonth[monthKey] else {
-            return [:]
-        }
-
-        return Dictionary(grouping: monthTransactions) { transaction in
+    // Group transactions within current selected month by day sections
+    var groupedByDayInCurrentMonth: [String: [TransactionData]] {
+        Dictionary(grouping: currentMonthTransactions) { transaction in
             let calendar = Calendar.current
             let now = Date()
 
@@ -194,6 +230,59 @@ struct TransactionRow: View {
                 .foregroundColor(transaction.amountColor)
         }
         .padding(.vertical, 4)
+    }
+}
+
+struct TransactionMonthPickerView: View {
+    @Binding var selectedDate: Date
+    let availableMonths: [String]
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(availableMonths, id: \.self) { monthKey in
+                    Button(action: {
+                        if let date = dateFromKey(monthKey) {
+                            selectedDate = date
+                            dismiss()
+                        }
+                    }) {
+                        HStack {
+                            Text(monthKey)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if isSameMonth(monthKey: monthKey, date: selectedDate) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Month")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    func dateFromKey(_ key: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.date(from: key)
+    }
+
+    func isSameMonth(monthKey: String, date: Date) -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date) == monthKey
     }
 }
 
