@@ -4,13 +4,13 @@ struct ResultsView: View {
     let navigateToUpload: () -> Void
 
     let categories = [
-        CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, emoji: "🏠", color: .blue, alert: false),
-        CategoryData(name: "Food & Delivery", amount: 8500, percentage: 18, emoji: "🍕", color: .orange, alert: true),
-        CategoryData(name: "Entertainment", amount: 4200, percentage: 9, emoji: "🎮", color: .purple, alert: false),
-        CategoryData(name: "Subscriptions", amount: 3800, percentage: 8, emoji: "📱", color: .pink, alert: false),
-        CategoryData(name: "Transport", amount: 2000, percentage: 4, emoji: "🚗", color: .green, alert: false),
-        CategoryData(name: "Health & Wellness", amount: 1500, percentage: 3, emoji: "💊", color: .teal, alert: false),
-        CategoryData(name: "Other", amount: 2500, percentage: 6, emoji: "📦", color: .gray, alert: false)
+        CategoryData(name: "Rent & Housing", amount: 25000, percentage: 52, symbolName: "house.fill", color: .blue, alert: false),
+        CategoryData(name: "Food & Delivery", amount: 8500, percentage: 18, symbolName: "takeoutbag.and.cup.and.straw.fill", color: .orange, alert: true),
+        CategoryData(name: "Entertainment", amount: 4200, percentage: 9, symbolName: "tv.fill", color: .purple, alert: false),
+        CategoryData(name: "Subscriptions", amount: 3800, percentage: 8, symbolName: "rectangle.stack.fill", color: .pink, alert: false),
+        CategoryData(name: "Transport", amount: 2000, percentage: 4, symbolName: "car.fill", color: .green, alert: false),
+        CategoryData(name: "Health & Wellness", amount: 1500, percentage: 3, symbolName: "heart.text.square.fill", color: .teal, alert: false),
+        CategoryData(name: "Other", amount: 2500, percentage: 6, symbolName: "square.grid.2x2.fill", color: .gray, alert: false)
     ]
 
     var body: some View {
@@ -18,35 +18,29 @@ struct ResultsView: View {
             List {
                 // Total Section
                 Section {
-                    VStack(spacing: 12) {
+                    VStack(spacing: 16) {
                         HStack {
-                            Text("📊 Your Expense Breakdown")
-                                .font(.title3)
-                                .fontWeight(.bold)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Total Spent")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+
+                                Text("₹47,500")
+                                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                                    .foregroundColor(.primary)
+                            }
+
                             Spacer()
                         }
 
-                        Text("January 2024")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        Divider()
-                            .padding(.vertical, 4)
-
-                        VStack(spacing: 4) {
-                            Text("Total Analyzed")
+                        HStack {
+                            Text("January 2024")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
-
-                            Text("₹47,500")
-                                .font(.system(size: 36, weight: .bold))
-                                .foregroundColor(.blue)
+                                .foregroundStyle(.secondary)
+                            Spacer()
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
                     }
-                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .padding(.vertical, 8)
                 }
 
                 // Categories Section
@@ -60,21 +54,15 @@ struct ResultsView: View {
                 Section(header: Text("INSIGHTS")) {
                     VStack(alignment: .leading, spacing: 12) {
                         InsightRow(text: "Your top spend: Rent (52%)")
-                        InsightRow(text: "Food delivery is 18% of your total spend — high! 🔴")
+                        InsightRow(text: "Food delivery is 18% of your total spend — high!", isAlert: true)
                         InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
                     }
-                    .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .padding(.vertical, 4)
                 }
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
-            .background(
-                LinearGradient(
-                    colors: [Color.blue.opacity(0.05), Color.white],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Ubroke")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -95,7 +83,7 @@ struct CategoryData: Identifiable {
     let name: String
     let amount: Int
     let percentage: Int
-    let emoji: String
+    let symbolName: String
     let color: Color
     let alert: Bool
 }
@@ -107,8 +95,10 @@ struct CategoryListRow: View {
         VStack(spacing: 10) {
             HStack {
                 HStack(spacing: 12) {
-                    Text(category.emoji)
+                    Image(systemName: category.symbolName)
                         .font(.title2)
+                        .foregroundColor(category.color)
+                        .frame(width: 28, height: 28)
 
                     Text(category.name)
                         .font(.body)
@@ -159,12 +149,13 @@ struct CategoryListRow: View {
 
 struct InsightRow: View {
     let text: String
+    var isAlert: Bool = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "lightbulb.fill")
+            Image(systemName: isAlert ? "exclamationmark.triangle.fill" : "lightbulb.fill")
                 .font(.caption)
-                .foregroundColor(.yellow)
+                .foregroundColor(isAlert ? .orange : .yellow)
             Text(text)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
