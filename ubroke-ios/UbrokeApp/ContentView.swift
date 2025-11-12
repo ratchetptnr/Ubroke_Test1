@@ -1,24 +1,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var currentScreen: AppScreen = .welcome
+    @State private var currentScreen: AppScreen = .onboarding
 
     var body: some View {
         NavigationStack {
             Group {
                 switch currentScreen {
-                case .welcome:
-                    WelcomeView(navigateToProfile: {
-                        currentScreen = .profile
+                case .onboarding:
+                    OnboardingView(navigateToUpload: {
+                        currentScreen = .upload
                     })
-                case .profile:
-                    ProfileView(
-                        navigateBack: { currentScreen = .welcome },
-                        navigateToUpload: { currentScreen = .upload }
-                    )
+                    .navigationBarHidden(true)
                 case .upload:
                     UploadView(
-                        navigateBack: { currentScreen = .profile },
+                        navigateBack: { currentScreen = .onboarding },
                         navigateToProcessing: { currentScreen = .processing }
                     )
                 case .processing:
@@ -37,8 +33,7 @@ struct ContentView: View {
 }
 
 enum AppScreen {
-    case welcome
-    case profile
+    case onboarding
     case upload
     case processing
     case mainApp
