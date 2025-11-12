@@ -4,8 +4,11 @@ struct OnboardingView: View {
     @State private var currentPage = 0
     let navigateToUpload: () -> Void
 
+    let totalPages = 6
+
     var body: some View {
         ZStack {
+            // Main content
             TabView(selection: $currentPage) {
                 // Page 1: Welcome to Ubroke
                 OnboardingPageView(
@@ -52,8 +55,92 @@ struct OnboardingView: View {
                 OnboardingFinalPage(navigateToUpload: navigateToUpload)
                     .tag(5)
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: .never))
+
+            // Navigation controls overlay
+            VStack {
+                // Skip button at top right
+                if currentPage < totalPages - 1 {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                currentPage = totalPages - 1
+                            }
+                        }) {
+                            Text("Skip")
+                                .font(.system(size: 17))
+                                .foregroundColor(.blue)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                        }
+                    }
+                    .padding(.top, 50)
+                }
+
+                Spacer()
+
+                // Page indicators and navigation buttons at bottom
+                VStack(spacing: 20) {
+                    // Custom page indicators
+                    HStack(spacing: 8) {
+                        ForEach(0..<totalPages, id: \.self) { index in
+                            Circle()
+                                .fill(currentPage == index ? Color.blue : Color.gray.opacity(0.3))
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+
+                    // Next and Back buttons
+                    if currentPage < totalPages - 1 {
+                        HStack(spacing: 16) {
+                            // Back button
+                            if currentPage > 0 {
+                                Button(action: {
+                                    withAnimation {
+                                        currentPage -= 1
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: "chevron.left")
+                                        Text("Back")
+                                    }
+                                    .font(.system(size: 17, weight: .medium))
+                                    .foregroundColor(.blue)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.blue, lineWidth: 1.5)
+                                    )
+                                }
+                            }
+
+                            // Next button
+                            Button(action: {
+                                withAnimation {
+                                    currentPage += 1
+                                }
+                            }) {
+                                HStack {
+                                    Text("Next")
+                                    Image(systemName: "chevron.right")
+                                }
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding(.horizontal, 40)
+                    }
+                }
+                .padding(.bottom, 40)
+            }
         }
     }
 }
@@ -68,12 +155,20 @@ struct OnboardingPageView: View {
         VStack(spacing: 30) {
             Spacer()
 
-            // Image
-            Image(imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 250, maxHeight: 250)
-                .padding(.top, 60)
+            // Image - Try to load from Assets
+            if let uiImage = UIImage(named: imageName) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 280, maxHeight: 280)
+            } else {
+                // Fallback placeholder
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 280, maxHeight: 280)
+                    .foregroundColor(.gray.opacity(0.3))
+            }
 
             Spacer()
 
@@ -97,7 +192,7 @@ struct OnboardingPageView: View {
                         .padding(.top, 8)
                 }
             }
-            .padding(.bottom, 100)
+            .padding(.bottom, 200)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
@@ -112,11 +207,19 @@ struct OnboardingFinalPage: View {
             Spacer()
 
             // Door image
-            Image("onboarding-6")
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 250, maxHeight: 250)
-                .padding(.top, 60)
+            if let uiImage = UIImage(named: "onboarding-6") {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 280, maxHeight: 280)
+            } else {
+                // Fallback placeholder
+                Image(systemName: "door.left.hand.open")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 280, maxHeight: 280)
+                    .foregroundColor(.gray.opacity(0.3))
+            }
 
             Spacer()
 
@@ -186,7 +289,7 @@ struct OnboardingFinalPage: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.top, 8)
-                .padding(.bottom, 60)
+                .padding(.bottom, 200)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
