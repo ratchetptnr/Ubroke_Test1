@@ -1,15 +1,14 @@
 import SwiftUI
 
 struct ChatView: View {
-    let threadTitle: String
+    let threadTitle: String?
+    let isNewChat: Bool
+    let onCreateThread: (String, String) -> Void
+
     @Environment(\.dismiss) private var dismiss
     @State private var messageText = ""
-    @State private var messages: [ChatMessage] = [
-        ChatMessage(
-            text: "Hi! I've analyzed your January expenses. Your biggest spend is rent (52%), followed by food delivery (18%). Ask me anything about your money!",
-            isUser: false
-        )
-    ]
+    @State private var messages: [ChatMessage] = []
+    @State private var hasCreatedThread = false
 
     let suggestedQuestions = [
         "Can I afford a ₹5k laptop?",
@@ -35,14 +34,29 @@ struct ChatView: View {
                         }
                         .padding(.top, 24)
 
+                        // Empty state for new chat
+                        if messages.isEmpty {
+                            VStack(spacing: 12) {
+                                Text("Start a conversation")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                Text("Ask me about your expenses, budgets, or financial goals")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                            }
+                            .padding(.top, 40)
+                        }
+
                         // Messages
                         ForEach(messages) { message in
                             MessageBubble(message: message)
                                 .id(message.id)
                         }
 
-                        // Suggested questions (only show if first message)
-                        if messages.count == 1 {
+                        // Suggested questions (only show if no messages or just AI greeting)
+                        if messages.isEmpty || (messages.count == 1 && !messages[0].isUser) {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text("💡 Suggested questions:")
                                     .font(.caption)
@@ -116,9 +130,18 @@ struct ChatView: View {
                 .background(.ultraThinMaterial)
             }
         }
-        .navigationTitle(threadTitle)
+        .navigationTitle(threadTitle ?? "New Chat")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
+        .onAppear {
+            // For existing threads, add the initial AI greeting
+            if !isNewChat && messages.isEmpty {
+                messages.append(ChatMessage(
+                    text: "Hi! I've analyzed your January expenses. Your biggest spend is rent (52%), followed by food delivery (18%). Ask me anything about your money!",
+                    isUser: false
+                ))
+            }
+        }
     }
 
     func sendMessage(_ text: String) {
@@ -126,7 +149,15 @@ struct ChatView: View {
 
         // Add user message
         messages.append(ChatMessage(text: text, isUser: true))
+        let userMessageText = text
         messageText = ""
+
+        // Create thread if this is the first message in a new chat
+        if isNewChat && !hasCreatedThread {
+            hasCreatedThread = true
+            let threadTitle = generateThreadTitle(from: userMessageText)
+            onCreateThread(threadTitle, userMessageText)
+        }
 
         // Simulate AI response
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -138,6 +169,27 @@ struct ChatView: View {
             Want tips on how?
             """
             messages.append(ChatMessage(text: response, isUser: false))
+        }
+    }
+
+    func generateThreadTitle(from message: String) -> String {
+        // Simple title generation based on keywords
+        let lowercased = message.lowercased()
+
+        if lowercased.contains("laptop") || lowercased.contains("afford") {
+            return "Can I afford a laptop?"
+        } else if lowercased.contains("subscription") {
+            return "Subscription review"
+        } else if lowercased.contains("save") || lowercased.contains("saving") {
+            return "Savings plan"
+        } else if lowercased.contains("food") || lowercased.contains("delivery") {
+            return "Food delivery spending"
+        } else if lowercased.contains("budget") {
+            return "Budget planning"
+        } else {
+            // Default: use first few words of the message
+            let words = message.split(separator: " ").prefix(4)
+            return words.joined(separator: " ")
         }
     }
 }
@@ -179,6 +231,6 @@ struct MessageBubble: View {
 
 #Preview {
     NavigationStack {
-        ChatView(threadTitle: "Food delivery spending")
+        ChatView(threadTitle: nil, isNewChat: true, onCreateThread: { _, _ in })
     }
 }

@@ -31,11 +31,17 @@ struct ChatListView: View {
         )
     ]
 
+    @State private var isShowingNewChat = false
+
     var body: some View {
         NavigationStack {
             List {
                 ForEach(chatThreads) { thread in
-                    NavigationLink(destination: ChatView(threadTitle: thread.title)) {
+                    NavigationLink(destination: ChatView(
+                        threadTitle: thread.title,
+                        isNewChat: false,
+                        onCreateThread: { _, _ in }
+                    )) {
                         ChatThreadRow(thread: thread)
                     }
                 }
@@ -45,12 +51,21 @@ struct ChatListView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: startNewChat) {
+                    Button(action: { isShowingNewChat = true }) {
                         Image(systemName: "plus")
                             .font(.body)
                             .fontWeight(.semibold)
                     }
                 }
+            }
+            .navigationDestination(isPresented: $isShowingNewChat) {
+                ChatView(
+                    threadTitle: nil,
+                    isNewChat: true,
+                    onCreateThread: { title, message in
+                        createThread(title: title, lastMessage: message)
+                    }
+                )
             }
         }
     }
@@ -59,12 +74,12 @@ struct ChatListView: View {
         chatThreads.remove(atOffsets: offsets)
     }
 
-    func startNewChat() {
+    func createThread(title: String, lastMessage: String) {
         let newThread = ChatThread(
-            title: "New conversation",
-            lastMessage: "Start asking questions about your finances...",
+            title: title,
+            lastMessage: lastMessage,
             date: "Now",
-            unread: true
+            unread: false
         )
         chatThreads.insert(newThread, at: 0)
     }
