@@ -22,7 +22,6 @@ struct UploadView: View {
     @State private var showingImagePicker = false
     @State private var showingDocumentPicker = false
     @State private var showingCamera = false
-    @State private var showingManualEntry = false
     @State private var selectedItems: [PhotosPickerItem] = []
 
     var body: some View {
@@ -93,7 +92,7 @@ struct UploadView: View {
                         .padding(.bottom, 4)
                     }
 
-                    // Action buttons - Row 1
+                    // Action buttons
                     HStack(spacing: 12) {
                         // Camera
                         Button(action: { showingCamera = true }) {
@@ -131,21 +130,6 @@ struct UploadView: View {
                                 Image(systemName: "folder")
                                     .font(.title2)
                                 Text("Files")
-                                    .font(.caption)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 20)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                        }
-                        .foregroundColor(.primary)
-
-                        // Manual Entry
-                        Button(action: { showingManualEntry = true }) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "pencil.line")
-                                    .font(.title2)
-                                Text("Manual")
                                     .font(.caption)
                             }
                             .frame(maxWidth: .infinity)
@@ -209,9 +193,6 @@ struct UploadView: View {
                 CameraPicker(onImageCaptured: { image in
                     addCameraImage(image)
                 })
-            }
-            .sheet(isPresented: $showingManualEntry) {
-                AddTransactionView()
             }
             .onChange(of: selectedItems) { oldValue, newValue in
                 Task {

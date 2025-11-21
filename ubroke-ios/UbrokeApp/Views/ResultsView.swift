@@ -5,6 +5,8 @@ struct ResultsView: View {
 
     @State private var selectedDate = Date()
     @State private var showingMonthPicker = false
+    @State private var showingAddOptions = false
+    @State private var showingManualEntry = false
 
     // Sample data for multiple months
     let monthlyData: [String: MonthData] = [
@@ -126,15 +128,29 @@ struct ResultsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: navigateToUpload) {
+                    Button(action: { showingAddOptions = true }) {
                         Image(systemName: "plus")
                             .font(.body)
                             .fontWeight(.semibold)
                     }
                 }
             }
+            .confirmationDialog("Add Transaction", isPresented: $showingAddOptions, titleVisibility: .visible) {
+                Button("Upload Documents") {
+                    navigateToUpload()
+                }
+                Button("Add Manually") {
+                    showingManualEntry = true
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("How would you like to add a transaction?")
+            }
             .sheet(isPresented: $showingMonthPicker) {
                 MonthPickerView(selectedDate: $selectedDate, availableMonths: Array(monthlyData.keys.sorted().reversed()))
+            }
+            .sheet(isPresented: $showingManualEntry) {
+                AddTransactionView()
             }
         }
     }
