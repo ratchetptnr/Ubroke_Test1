@@ -64,29 +64,52 @@ enum AppScreen {
 struct MainTabView: View {
     let navigateToUpload: () -> Void
     @State private var selectedTab = 0
+    @State private var showingAddOptions = false
+    @State private var showingManualEntry = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
             // Home Tab
-            ResultsView(navigateToUpload: navigateToUpload)
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-                .tag(0)
+            Tab("Home", systemImage: "house.fill", value: 0) {
+                ResultsView(navigateToUpload: navigateToUpload)
+            }
 
             // Transactions Tab
-            TransactionsView()
-                .tabItem {
-                    Label("Transactions", systemImage: "list.bullet.rectangle.fill")
-                }
-                .tag(1)
+            Tab("Transactions", systemImage: "list.bullet.rectangle.fill", value: 1) {
+                TransactionsView()
+            }
 
-            // Ask AI Tab - Shows list of chats
-            ChatListView()
-                .tabItem {
-                    Label("Ask AI", systemImage: "message.fill")
-                }
-                .tag(2)
+            // Add Tab (floating style)
+            Tab("Add", systemImage: "plus.circle.fill", value: 3, role: .search) {
+                // This view won't actually show - we intercept it
+                Color.clear
+            }
+
+            // Ask AI Tab
+            Tab("Ask AI", systemImage: "message.fill", value: 2) {
+                ChatListView()
+            }
+        }
+        .onChange(of: selectedTab) { oldValue, newValue in
+            if newValue == 3 {
+                // Reset to previous tab and show action sheet
+                selectedTab = oldValue
+                showingAddOptions = true
+            }
+        }
+        .confirmationDialog("Add Transaction", isPresented: $showingAddOptions, titleVisibility: .visible) {
+            Button("Upload Documents") {
+                navigateToUpload()
+            }
+            Button("Add Manually") {
+                showingManualEntry = true
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("How would you like to add a transaction?")
+        }
+        .sheet(isPresented: $showingManualEntry) {
+            AddTransactionView()
         }
     }
 }

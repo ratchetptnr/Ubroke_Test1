@@ -5,8 +5,6 @@ struct ResultsView: View {
 
     @State private var selectedDate = Date()
     @State private var showingMonthPicker = false
-    @State private var showingAddOptions = false
-    @State private var showingManualEntry = false
 
     // Sample data for multiple months
     let monthlyData: [String: MonthData] = [
@@ -66,103 +64,68 @@ struct ResultsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                List {
-                    // Month Selector
-                    Section {
-                        Button(action: { showingMonthPicker = true }) {
-                            HStack {
-                                Image(systemName: "calendar")
-                                    .foregroundColor(.blue)
-                                Text(formattedMonth)
-                                    .font(.body)
+            List {
+                // Month Selector
+                Section {
+                    Button(action: { showingMonthPicker = true }) {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.blue)
+                            Text(formattedMonth)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                // Total Section
+                Section {
+                    VStack(spacing: 16) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Total Spent")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+
+                                Text("₹\(currentMonthData.total.formatted())")
+                                    .font(.system(size: 40, weight: .bold, design: .rounded))
                                     .foregroundColor(.primary)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
                             }
+
+                            Spacer()
                         }
                     }
-
-                    // Total Section
-                    Section {
-                        VStack(spacing: 16) {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("Total Spent")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-
-                                    Text("₹\(currentMonthData.total.formatted())")
-                                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                                        .foregroundColor(.primary)
-                                }
-
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 8)
-                    }
-
-                    // Categories Section
-                    Section(header: Text("BY CATEGORY")) {
-                        ForEach(currentMonthData.categories) { category in
-                            CategoryListRow(category: category)
-                        }
-                    }
-
-                    // Insights Section
-                    Section(header: Text("INSIGHTS")) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            InsightRow(text: "Your top spend: Rent (52%)")
-                            InsightRow(text: "Food delivery is 18% of your total spend — high!", isAlert: true)
-                            InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
-                        }
-                        .padding(.vertical, 4)
-                    }
-
-                    // Bottom padding for floating button
-                    Section {
-                        Color.clear.frame(height: 60)
-                    }
-                    .listRowBackground(Color.clear)
+                    .padding(.vertical, 8)
                 }
-                .listStyle(.insetGrouped)
-                .scrollContentBackground(.hidden)
-                .background(Color(.systemGroupedBackground))
 
-                // Floating + button (iOS 18 style)
-                Button(action: { showingAddOptions = true }) {
-                    Image(systemName: "plus")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(width: 56, height: 56)
-                        .background(Color.blue)
-                        .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                // Categories Section
+                Section(header: Text("BY CATEGORY")) {
+                    ForEach(currentMonthData.categories) { category in
+                        CategoryListRow(category: category)
+                    }
                 }
-                .padding(.bottom, 16)
+
+                // Insights Section
+                Section(header: Text("INSIGHTS")) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        InsightRow(text: "Your top spend: Rent (52%)")
+                        InsightRow(text: "Food delivery is 18% of your total spend — high!", isAlert: true)
+                        InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
+                    }
+                    .padding(.vertical, 4)
+                }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Ubroke")
             .navigationBarTitleDisplayMode(.inline)
-            .confirmationDialog("Add Transaction", isPresented: $showingAddOptions, titleVisibility: .visible) {
-                Button("Upload Documents") {
-                    navigateToUpload()
-                }
-                Button("Add Manually") {
-                    showingManualEntry = true
-                }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("How would you like to add a transaction?")
-            }
             .sheet(isPresented: $showingMonthPicker) {
                 MonthPickerView(selectedDate: $selectedDate, availableMonths: Array(monthlyData.keys.sorted().reversed()))
-            }
-            .sheet(isPresented: $showingManualEntry) {
-                AddTransactionView()
             }
         }
     }
