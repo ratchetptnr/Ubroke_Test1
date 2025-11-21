@@ -58,7 +58,7 @@ struct OnboardingView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
 
             // Navigation controls overlay
-            VStack {
+            VStack(spacing: 0) {
                 // Skip button at top right
                 if currentPage < totalPages - 1 {
                     HStack {
@@ -69,19 +69,21 @@ struct OnboardingView: View {
                             }
                         }) {
                             Text("Skip")
-                                .font(.system(size: 17))
+                                .font(.body)
                                 .foregroundColor(.blue)
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 10)
                         }
+                        .padding(.trailing, 20)
                     }
-                    .padding(.top, 50)
+                    .padding(.top, 60)
+                } else {
+                    Spacer()
+                        .frame(height: 60)
                 }
 
                 Spacer()
 
                 // Page indicators and navigation buttons at bottom
-                VStack(spacing: 20) {
+                VStack(spacing: 24) {
                     // Custom page indicators
                     HStack(spacing: 8) {
                         ForEach(0..<totalPages, id: \.self) { index in
@@ -93,7 +95,7 @@ struct OnboardingView: View {
 
                     // Next and Back buttons
                     if currentPage < totalPages - 1 {
-                        HStack(spacing: 16) {
+                        HStack(spacing: 12) {
                             // Back button
                             if currentPage > 0 {
                                 Button(action: {
@@ -101,15 +103,16 @@ struct OnboardingView: View {
                                         currentPage -= 1
                                     }
                                 }) {
-                                    HStack {
+                                    HStack(spacing: 4) {
                                         Image(systemName: "chevron.left")
                                         Text("Back")
                                     }
-                                    .font(.system(size: 17, weight: .medium))
+                                    .font(.body)
+                                    .fontWeight(.medium)
                                     .foregroundColor(.blue)
                                     .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 14)
-                                    .background(Color.white)
+                                    .frame(height: 50)
+                                    .background(Color(.systemBackground))
                                     .cornerRadius(12)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 12)
@@ -124,22 +127,23 @@ struct OnboardingView: View {
                                     currentPage += 1
                                 }
                             }) {
-                                HStack {
+                                HStack(spacing: 4) {
                                     Text("Next")
                                     Image(systemName: "chevron.right")
                                 }
-                                .font(.system(size: 17, weight: .semibold))
+                                .font(.body)
+                                .fontWeight(.semibold)
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
+                                .frame(height: 50)
                                 .background(Color.blue)
                                 .cornerRadius(12)
                             }
                         }
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, 20)
                     }
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 50)
             }
         }
     }
@@ -152,17 +156,17 @@ struct OnboardingPageView: View {
     var footer: String? = nil
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 0) {
             Spacer()
+                .frame(minHeight: 60)
 
-            // Image - Try to load from Assets
+            // Image
             if let uiImage = UIImage(named: imageName) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: 280, maxHeight: 280)
             } else {
-                // Fallback placeholder
                 Image(systemName: "photo")
                     .resizable()
                     .scaledToFit()
@@ -171,28 +175,33 @@ struct OnboardingPageView: View {
             }
 
             Spacer()
+                .frame(minHeight: 32, maxHeight: 48)
 
             // Text content
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 Text(title)
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.title)
+                    .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary)
 
                 Text(subtitle)
-                    .font(.system(size: 17))
+                    .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
-                    .padding(.horizontal, 40)
+                    .lineSpacing(4)
 
                 if let footer = footer {
                     Text(footer)
-                        .font(.system(size: 15))
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
                         .padding(.top, 8)
                 }
             }
-            .padding(.bottom, 200)
+            .padding(.horizontal, 20)
+
+            Spacer()
+                .frame(minHeight: 120)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
@@ -203,8 +212,9 @@ struct OnboardingFinalPage: View {
     let navigateToUpload: () -> Void
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 0) {
             Spacer()
+                .frame(minHeight: 60)
 
             // Door image
             if let uiImage = UIImage(named: "onboarding-6") {
@@ -213,7 +223,6 @@ struct OnboardingFinalPage: View {
                     .scaledToFit()
                     .frame(maxWidth: 280, maxHeight: 280)
             } else {
-                // Fallback placeholder
                 Image(systemName: "door.left.hand.open")
                     .resizable()
                     .scaledToFit()
@@ -222,26 +231,32 @@ struct OnboardingFinalPage: View {
             }
 
             Spacer()
+                .frame(minHeight: 32, maxHeight: 48)
 
             // Title
             Text("Ready to take control of\nyour spending?")
-                .font(.system(size: 28, weight: .bold))
+                .font(.title)
+                .fontWeight(.bold)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.primary)
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 20)
+
+            Spacer()
+                .frame(height: 32)
 
             // Buttons
             VStack(spacing: 12) {
                 // Continue with Apple
                 Button(action: navigateToUpload) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: "apple.logo")
-                            .font(.system(size: 20))
+                            .font(.body)
                         Text("Continue with Apple")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.body)
+                            .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                    .frame(height: 50)
                     .background(Color.black)
                     .foregroundColor(.white)
                     .cornerRadius(12)
@@ -249,47 +264,51 @@ struct OnboardingFinalPage: View {
 
                 // Continue with Google
                 Button(action: navigateToUpload) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: "g.circle.fill")
-                            .font(.system(size: 20))
+                            .font(.body)
                         Text("Continue with Google")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.body)
+                            .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.white)
-                    .foregroundColor(.black)
+                    .frame(height: 50)
+                    .background(Color(.systemBackground))
+                    .foregroundColor(.primary)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            .stroke(Color(.separator), lineWidth: 1)
                     )
                 }
 
                 // Log in
                 Button(action: navigateToUpload) {
                     Text("Log in")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.body)
+                        .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.white)
+                        .frame(height: 50)
+                        .background(Color(.systemBackground))
                         .foregroundColor(.blue)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                .stroke(Color(.separator), lineWidth: 1)
                         )
                 }
             }
-            .padding(.horizontal, 40)
+            .padding(.horizontal, 20)
 
             // Privacy note
             Text("Your photos are processed securely.\nOnly expense data is saved.")
-                .font(.system(size: 13))
+                .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.top, 8)
-                .padding(.bottom, 200)
+                .padding(.top, 16)
+
+            Spacer()
+                .frame(minHeight: 40)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
