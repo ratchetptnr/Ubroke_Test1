@@ -66,75 +66,87 @@ struct ResultsView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                // Month Selector
-                Section {
-                    Button(action: { showingMonthPicker = true }) {
-                        HStack {
-                            Image(systemName: "calendar")
-                                .foregroundColor(.blue)
-                            Text(formattedMonth)
-                                .font(.body)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-
-                // Total Section
-                Section {
-                    VStack(spacing: 16) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Total Spent")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-
-                                Text("₹\(currentMonthData.total.formatted())")
-                                    .font(.system(size: 40, weight: .bold, design: .rounded))
+            ZStack(alignment: .bottom) {
+                List {
+                    // Month Selector
+                    Section {
+                        Button(action: { showingMonthPicker = true }) {
+                            HStack {
+                                Image(systemName: "calendar")
+                                    .foregroundColor(.blue)
+                                Text(formattedMonth)
+                                    .font(.body)
                                     .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
-
-                            Spacer()
                         }
                     }
-                    .padding(.vertical, 8)
-                }
 
-                // Categories Section
-                Section(header: Text("BY CATEGORY")) {
-                    ForEach(currentMonthData.categories) { category in
-                        CategoryListRow(category: category)
-                    }
-                }
+                    // Total Section
+                    Section {
+                        VStack(spacing: 16) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Total Spent")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
 
-                // Insights Section
-                Section(header: Text("INSIGHTS")) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        InsightRow(text: "Your top spend: Rent (52%)")
-                        InsightRow(text: "Food delivery is 18% of your total spend — high!", isAlert: true)
-                        InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
+                                    Text("₹\(currentMonthData.total.formatted())")
+                                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                                        .foregroundColor(.primary)
+                                }
+
+                                Spacer()
+                            }
+                        }
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 4)
+
+                    // Categories Section
+                    Section(header: Text("BY CATEGORY")) {
+                        ForEach(currentMonthData.categories) { category in
+                            CategoryListRow(category: category)
+                        }
+                    }
+
+                    // Insights Section
+                    Section(header: Text("INSIGHTS")) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            InsightRow(text: "Your top spend: Rent (52%)")
+                            InsightRow(text: "Food delivery is 18% of your total spend — high!", isAlert: true)
+                            InsightRow(text: "You have 6 recurring costs (subscriptions, gym, etc.)")
+                        }
+                        .padding(.vertical, 4)
+                    }
+
+                    // Bottom padding for floating button
+                    Section {
+                        Color.clear.frame(height: 60)
+                    }
+                    .listRowBackground(Color.clear)
                 }
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
+                .background(Color(.systemGroupedBackground))
+
+                // Floating + button (iOS 18 style)
+                Button(action: { showingAddOptions = true }) {
+                    Image(systemName: "plus")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                }
+                .padding(.bottom, 16)
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Ubroke")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showingAddOptions = true }) {
-                        Image(systemName: "plus")
-                            .font(.body)
-                            .fontWeight(.semibold)
-                    }
-                }
-            }
             .confirmationDialog("Add Transaction", isPresented: $showingAddOptions, titleVisibility: .visible) {
                 Button("Upload Documents") {
                     navigateToUpload()
