@@ -3,6 +3,7 @@ import SwiftUI
 struct TransactionsView: View {
     @State private var selectedDate = Date()
     @State private var showingMonthPicker = false
+    @State private var showingAddTransaction = false
 
     let transactions = [
         // November 2024 - Recent transactions
@@ -84,8 +85,20 @@ struct TransactionsView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Transactions")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { showingAddTransaction = true }) {
+                        Image(systemName: "plus")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                    }
+                }
+            }
             .sheet(isPresented: $showingMonthPicker) {
                 TransactionMonthPickerView(selectedDate: $selectedDate, availableMonths: availableMonths)
+            }
+            .sheet(isPresented: $showingAddTransaction) {
+                AddTransactionView()
             }
         }
     }
