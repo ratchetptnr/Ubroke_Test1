@@ -64,49 +64,47 @@ enum AppScreen {
 struct MainTabView: View {
     let navigateToUpload: () -> Void
     @State private var selectedTab = 0
-    @State private var showingAddOptions = false
     @State private var showingManualEntry = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            // Home Tab
-            Tab("Home", systemImage: "house.fill", value: 0) {
-                ResultsView(navigateToUpload: navigateToUpload)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selectedTab) {
+                // Home Tab
+                Tab("Home", systemImage: "house.fill", value: 0) {
+                    ResultsView(navigateToUpload: navigateToUpload)
+                }
+
+                // Transactions Tab
+                Tab("Transactions", systemImage: "list.bullet.rectangle.fill", value: 1) {
+                    TransactionsView()
+                }
+
+                // Ask AI Tab
+                Tab("Ask AI", systemImage: "message.fill", value: 2) {
+                    ChatListView()
+                }
             }
 
-            // Transactions Tab
-            Tab("Transactions", systemImage: "list.bullet.rectangle.fill", value: 1) {
-                TransactionsView()
+            // Floating Add button with Menu
+            Menu {
+                Button(action: { navigateToUpload() }) {
+                    Label("Upload Documents", systemImage: "doc.fill")
+                }
+                Button(action: { showingManualEntry = true }) {
+                    Label("Add Manually", systemImage: "pencil.line")
+                }
+            } label: {
+                Image(systemName: "plus")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .frame(width: 44, height: 44)
+                    .background(Color.blue)
+                    .clipShape(Circle())
             }
-
-            // Add Tab (floating style)
-            Tab("Add", systemImage: "plus.circle.fill", value: 3, role: .search) {
-                // This view won't actually show - we intercept it
-                Color.clear
-            }
-
-            // Ask AI Tab
-            Tab("Ask AI", systemImage: "message.fill", value: 2) {
-                ChatListView()
-            }
-        }
-        .onChange(of: selectedTab) { oldValue, newValue in
-            if newValue == 3 {
-                // Reset to previous tab and show action sheet
-                selectedTab = oldValue
-                showingAddOptions = true
-            }
-        }
-        .confirmationDialog("Add Transaction", isPresented: $showingAddOptions, titleVisibility: .visible) {
-            Button("Upload Documents") {
-                navigateToUpload()
-            }
-            Button("Add Manually") {
-                showingManualEntry = true
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("How would you like to add a transaction?")
+            .padding(.trailing, 20)
+            .padding(.bottom, 2)
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .sheet(isPresented: $showingManualEntry) {
             AddTransactionView()
