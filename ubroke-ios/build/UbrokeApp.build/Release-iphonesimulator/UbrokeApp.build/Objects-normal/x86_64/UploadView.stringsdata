@@ -1,0 +1,128 @@
+{
+  "source": "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/UploadView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Upload Statements",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "Back",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Back",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Your Statements",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Upload bank statements or scan receipts to automatically track your expenses.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 175
+        }
+      },
+      {
+        "comment": "",
+        "key": "Photos",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Files",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "Selected Files (%lld)",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select a file to start",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 254
+        }
+      },
+      {
+        "comment": "",
+        "key": "Process %lld Files",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 274
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@, %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 369
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 370
+        }
+      },
+      {
+        "comment": "",
+        "key": "Image",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 350
+        }
+      },
+      {
+        "comment": "",
+        "key": "PDF Document",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 350
+        }
+      }
+    ]
+  },
+  "version": 1
+}

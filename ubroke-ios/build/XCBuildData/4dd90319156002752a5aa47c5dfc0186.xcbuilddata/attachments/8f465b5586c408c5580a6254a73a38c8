@@ -1,0 +1,76 @@
+{
+  "" : {
+    "const-values" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.swiftconstvalues",
+    "dependencies" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.d",
+    "diagnostics" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.dia",
+    "emit-module-dependencies" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary-emit-module.dia",
+    "pch" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.swiftdeps"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/ContentView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/UbrokeApp.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/AddTransactionView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/AddTransactionView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/AddTransactionView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/AddTransactionView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ChatListView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatListView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatListView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatListView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ChatView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ChatView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/OnboardingView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/OnboardingView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/OnboardingView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/OnboardingView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ProcessingView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProcessingView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProcessingView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProcessingView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ProfileView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProfileView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProfileView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ProfileView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ResultsView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ResultsView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ResultsView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/ResultsView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/TransactionsView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/TransactionsView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/TransactionsView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/TransactionsView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/UploadView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UploadView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UploadView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UploadView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/WelcomeView.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/WelcomeView.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/WelcomeView.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/WelcomeView.o"
+  },
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "source": "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/ProcessingView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Processing Statements",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "AI is analyzing your documents...",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Complete",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "View Results",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Review Duplicates (Demo)",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 84
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -5,24 +5,21 @@ struct WelcomeView: View {
 
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [Color.blue.opacity(0.1), Color.white],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            // Solid background
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: 24) {
                     Spacer()
                         .frame(height: 40)
 
-                    // Logo
+                    // Logo with solid purple
                     ZStack {
                         Circle()
-                            .fill(Color.blue)
+                            .fill(BrandColors.purple)
                             .frame(width: 80, height: 80)
+                            .shadow(color: BrandColors.purple.opacity(0.3), radius: 12, x: 0, y: 6)
 
                         Text("U")
                             .font(.system(size: 40, weight: .bold))
@@ -33,6 +30,7 @@ struct WelcomeView: View {
                     VStack(spacing: 8) {
                         Text("UBROKE 2.0")
                             .font(.system(size: 32, weight: .bold))
+                            .foregroundStyle(BrandColors.purple)
 
                         Text("Your Personal Finance Brain")
                             .font(.title3)
@@ -54,10 +52,11 @@ struct WelcomeView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("What we do:")
                                 .font(.headline)
+                                .foregroundStyle(BrandColors.purple)
 
-                            FeatureRow(icon: "checkmark.circle.fill", text: "Read your financial docs", color: .green)
-                            FeatureRow(icon: "checkmark.circle.fill", text: "Show you where money goes", color: .green)
-                            FeatureRow(icon: "checkmark.circle.fill", text: "Answer your money questions", color: .green)
+                            FeatureRow(icon: "checkmark.circle.fill", text: "Read your financial docs", color: BrandColors.gold)
+                            FeatureRow(icon: "checkmark.circle.fill", text: "Show you where money goes", color: BrandColors.gold)
+                            FeatureRow(icon: "checkmark.circle.fill", text: "Answer your money questions", color: BrandColors.gold)
                         }
                     }
 
@@ -66,10 +65,11 @@ struct WelcomeView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("What we DON'T do:")
                                 .font(.headline)
+                                .foregroundStyle(BrandColors.purple)
 
-                            FeatureRow(icon: "xmark.circle.fill", text: "Ask for passwords/card info", color: .red)
-                            FeatureRow(icon: "xmark.circle.fill", text: "Move your money around", color: .red)
-                            FeatureRow(icon: "xmark.circle.fill", text: "Make decisions for you", color: .red)
+                            FeatureRow(icon: "xmark.circle.fill", text: "Ask for passwords/card info", color: BrandColors.pink)
+                            FeatureRow(icon: "xmark.circle.fill", text: "Move your money around", color: BrandColors.pink)
+                            FeatureRow(icon: "xmark.circle.fill", text: "Make decisions for you", color: BrandColors.pink)
                         }
                     }
 
@@ -80,12 +80,8 @@ struct WelcomeView: View {
                                 .fontWeight(.semibold)
                             Image(systemName: "arrow.right")
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
                     }
+                    .buttonStyle(.brand)
                     .padding(.top, 8)
 
                     Spacer()
@@ -129,9 +125,13 @@ struct GlassCard<Content: View>: View {
             .padding(20)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(.ultraThinMaterial)
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+                    .fill(Color(.systemBackground))
             )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(BrandColors.purple.opacity(0.2), lineWidth: 1)
+            )
+            .shadow(color: BrandColors.purple.opacity(0.1), radius: 10, x: 0, y: 4)
     }
 }
 

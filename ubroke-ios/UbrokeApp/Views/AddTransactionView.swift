@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AddTransactionView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var transactionManager: TransactionManager
 
     @State private var transactionName = ""
     @State private var amount = ""
@@ -43,38 +44,36 @@ struct AddTransactionView: View {
                     Text("DETAILS")
                 }
 
-                // Transaction Type
+                // Type, Category, Date
                 Section {
-                    Picker("Type", selection: $transactionType) {
-                        Text("Expense").tag(TransactionEntryType.expense)
-                        Text("Income").tag(TransactionEntryType.income)
-                    }
-                    .pickerStyle(.segmented)
-                } header: {
-                    Text("TYPE")
-                }
-
-                // Category
-                Section {
-                    Picker("Category", selection: $selectedCategory) {
-                        ForEach(categories, id: \.name) { category in
-                            HStack {
-                                Image(systemName: category.symbolName)
-                                    .foregroundColor(category.color)
-                                Text(category.name)
-                            }
-                            .tag(category.name)
+                    Picker(selection: $transactionType) {
+                        Label("Expense", systemImage: "minus.circle.fill")
+                            .tag(TransactionEntryType.expense)
+                        Label("Income", systemImage: "plus.circle.fill")
+                            .tag(TransactionEntryType.income)
+                    } label: {
+                        HStack {
+                            Text("Type")
+                            Spacer()
                         }
                     }
-                } header: {
-                    Text("CATEGORY")
-                }
-
-                // Date
-                Section {
+                    .pickerStyle(.menu)
+                    
+                    Picker(selection: $selectedCategory) {
+                        ForEach(categories, id: \.name) { category in
+                            Label(category.name, systemImage: category.symbolName)
+                                .tag(category.name)
+                        }
+                    } label: {
+                        HStack {
+                            Text("Category")
+                            Spacer()
+                        }
+                    }
+                    
                     DatePicker("Date", selection: $transactionDate, displayedComponents: [.date])
                 } header: {
-                    Text("DATE")
+                    Text("TRANSACTION")
                 }
 
                 // Notes (Optional)
@@ -99,6 +98,7 @@ struct AddTransactionView: View {
                         saveTransaction()
                     }
                     .fontWeight(.semibold)
+                    .foregroundColor(BrandColors.purple)
                     .disabled(!isFormValid)
                 }
             }
@@ -106,23 +106,27 @@ struct AddTransactionView: View {
     }
 
     func saveTransaction() {
-        // In a real app, this would save to a data store
-        // For now, just dismiss the sheet
+        guard let amountValue = Int(amount) else { return }
+        
+        // Find category color and symbol
+        let category = categories.first(where: { $0.name == selectedCategory })
+        
+        let transaction = TransactionData(
+            name: transactionName,
+            category: selectedCategory,
+            amount: transactionType == .expense ? -amountValue : amountValue,
+            type: transactionType,
+            date: transactionDate,
+            symbolName: category?.symbolName ?? "questionmark.circle",
+            color: category?.color ?? .gray
+        )
+        
+        transactionManager.addTransaction(transaction)
         dismiss()
     }
 }
 
-enum TransactionEntryType {
-    case income
-    case expense
-}
-
-struct CategoryOption {
-    let name: String
-    let symbolName: String
-    let color: Color
-}
-
 #Preview {
     AddTransactionView()
+        .environmentObject(TransactionManager())
 }

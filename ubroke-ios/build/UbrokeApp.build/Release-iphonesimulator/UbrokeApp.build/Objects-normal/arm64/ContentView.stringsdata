@@ -1,0 +1,128 @@
+{
+  "source": "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Home",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "Transactions",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ask AI",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Upload Documents",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Manually",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 149
+        }
+      },
+      {
+        "comment": "",
+        "key": "Comparison between statement transaction and manual entry",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 264
+        }
+      },
+      {
+        "comment": "",
+        "key": "Potential Duplicate Found",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "We found a transaction in your statement that looks similar to one you added manually.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "Yes, Merge. Update manual entry with statement details.",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 282
+        }
+      },
+      {
+        "comment": "",
+        "key": "Double tap to merge transactions.",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 283
+        }
+      },
+      {
+        "comment": "",
+        "key": "Double tap to keep both transactions separate.",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 295
+        }
+      },
+      {
+        "comment": "",
+        "key": "Yes, Merge",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Update manual entry with statement details",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 276
+        }
+      },
+      {
+        "comment": "",
+        "key": "No, Keep Both",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 286
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@: %@, %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 338
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,211 +1,144 @@
 import SwiftUI
 
 struct ProcessingView: View {
-    let navigateToResults: () -> Void
-
-    @State private var progress: Double = 0.0
-    @State private var currentStep = 1
-    @State private var isComplete = false
-
+    var navigateToResults: () -> Void
+    var navigateToMergeReview: () -> Void
+    
+    @EnvironmentObject var viewModel: UploadViewModel
+    
     var body: some View {
         ZStack {
+            // Background
             LinearGradient(
-                colors: [Color.blue.opacity(0.1), Color.white],
-                startPoint: .top,
-                endPoint: .bottom
+                gradient: Gradient(colors: [Color.blue.opacity(0.1), Color.purple.opacity(0.1)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
-
+            
             VStack(spacing: 32) {
-                Spacer()
-
-                // Icon
-                if isComplete {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 80))
-                        .foregroundColor(.green)
-                        .transition(.scale.combined(with: .opacity))
-                } else {
-                    ProgressView()
-                        .scaleEffect(2)
-                        .tint(.blue)
+                // Header
+                VStack(spacing: 12) {
+                    Text("Processing Statements")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Text("AI is analyzing your documents...")
+                        .font(.body)
+                        .foregroundColor(.secondary)
                 }
-
-                // Title
-                Text(isComplete ? "✅ Analysis Complete!" : "📊 Analyzing...")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                if !isComplete {
-                    // Progress bar and percentage
-                    VStack(spacing: 12) {
-                        ProgressView(value: progress, total: 100)
-                            .tint(.blue)
-                            .scaleEffect(x: 1, y: 2, anchor: .center)
-                            .padding(.horizontal, 40)
-
-                        Text("\(Int(progress))%")
+                .padding(.top, 40)
+                
+                // Progress Circle
+                ZStack {
+                    Circle()
+                        .stroke(lineWidth: 12)
+                        .opacity(0.1)
+                        .foregroundColor(.blue)
+                    
+                    Circle()
+                        .trim(from: 0.0, to: CGFloat(min(viewModel.progress / 100, 1.0)))
+                        .stroke(style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.blue)
+                        .rotationEffect(Angle(degrees: 270.0))
+                        .animation(.linear, value: viewModel.progress)
+                    
+                    VStack(spacing: 4) {
+                        Text("\(Int(viewModel.progress))%")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        Text("Complete")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-
-                    // Steps
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 16) {
-                            ProcessingStep(
-                                number: 1,
-                                text: "Reading document...",
-                                isComplete: currentStep > 1
-                            )
-                            ProcessingStep(
-                                number: 2,
-                                text: "Extracting data...",
-                                isComplete: currentStep > 2
-                            )
-                            ProcessingStep(
-                                number: 3,
-                                text: "Categorizing...",
-                                isComplete: currentStep > 3
-                            )
-                            ProcessingStep(
-                                number: 4,
-                                text: "Building summary...",
-                                isComplete: currentStep > 4
-                            )
+                }
+                .frame(width: 180, height: 180)
+                .padding(.vertical, 20)
+                
+                // Steps
+                VStack(alignment: .leading, spacing: 20) {
+                    ProcessingStep(title: "Uploading documents", isCompleted: viewModel.currentStep > 1, isActive: viewModel.currentStep == 1)
+                    ProcessingStep(title: "Extracting text (OCR)", isCompleted: viewModel.currentStep > 2, isActive: viewModel.currentStep == 2)
+                    ProcessingStep(title: "Identifying transactions", isCompleted: viewModel.currentStep > 3, isActive: viewModel.currentStep == 3)
+                    ProcessingStep(title: "Categorizing expenses", isCompleted: viewModel.currentStep > 4, isActive: viewModel.currentStep == 4)
+                    ProcessingStep(title: "Finalizing results", isCompleted: viewModel.isComplete, isActive: viewModel.currentStep == 5)
+                }
+                .padding(.horizontal, 40)
+                
+                Spacer()
+                
+                // Results Button (appears when complete)
+                if viewModel.isComplete {
+                    VStack(spacing: 16) {
+                        Button(action: navigateToResults) {
+                            Text("View Results")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 56)
+                                .background(Color.blue)
+                                .cornerRadius(16)
+                        }
+                        
+                        Button(action: navigateToMergeReview) {
+                            Text("Review Duplicates (Demo)")
+                                .font(.subheadline)
+                                .foregroundColor(.blue)
                         }
                     }
                     .padding(.horizontal, 20)
-
-                    // Info text
-                    Text("Typically takes 10-15 seconds. Hang tight!")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                } else {
-                    // Complete state
-                    VStack(spacing: 16) {
-                        Text("\"Salary_Jan_2024.pdf\"")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-
-                        Text("Your document is ready.")
-                            .font(.body)
-
-                        GlassCard {
-                            VStack(spacing: 16) {
-                                Text("Found:")
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                HStack(spacing: 20) {
-                                    StatBox(number: "47", label: "Transactions")
-                                    StatBox(number: "8", label: "Categories")
-                                    StatBox(number: "6", label: "Recurring")
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 20)
-
-                        Button(action: navigateToResults) {
-                            HStack {
-                                Text("View Results")
-                                    .fontWeight(.semibold)
-                                Image(systemName: "arrow.right")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                        }
-                        .padding(.horizontal, 20)
-                    }
+                    .padding(.bottom, 40)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
-
-                Spacer()
             }
         }
         .navigationBarHidden(true)
         .onAppear {
-            startProcessing()
-        }
-    }
-
-    func startProcessing() {
-        // Simulate processing
-        withAnimation(.linear(duration: 1.0)) {
-            progress = 25
-            currentStep = 2
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            withAnimation(.linear(duration: 1.0)) {
-                progress = 50
-                currentStep = 3
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            withAnimation(.linear(duration: 1.0)) {
-                progress = 75
-                currentStep = 4
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            withAnimation(.linear(duration: 1.0)) {
-                progress = 100
-                currentStep = 5
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-            withAnimation(.spring()) {
-                isComplete = true
-            }
+            viewModel.startProcessing()
         }
     }
 }
 
 struct ProcessingStep: View {
-    let number: Int
-    let text: String
-    let isComplete: Bool
-
+    let title: String
+    let isCompleted: Bool
+    let isActive: Bool
+    
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: isComplete ? "checkmark.circle.fill" : "circle")
-                .foregroundColor(isComplete ? .green : .gray)
-                .font(.system(size: 20))
-
-            Text("Step \(number): \(text)")
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .stroke(lineWidth: 2)
+                    .foregroundColor(isCompleted ? .green : (isActive ? .blue : .gray.opacity(0.3)))
+                    .frame(width: 24, height: 24)
+                
+                if isCompleted {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.green)
+                } else if isActive {
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: 12, height: 12)
+                }
+            }
+            
+            Text(title)
                 .font(.body)
-                .foregroundColor(isComplete ? .primary : .secondary)
-
+                .foregroundColor(isCompleted || isActive ? .primary : .secondary)
+                .fontWeight(isActive ? .medium : .regular)
+            
             Spacer()
+            
+            if isActive {
+                ProgressView()
+                    .scaleEffect(0.8)
+            }
         }
-    }
-}
-
-struct StatBox: View {
-    let number: String
-    let label: String
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Text(number)
-                .font(.system(size: 32, weight: .bold))
-                .foregroundColor(.blue)
-
-            Text(label)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 
 #Preview {
-    ProcessingView(navigateToResults: {})
+    ProcessingView(navigateToResults: {}, navigateToMergeReview: {})
+        .environmentObject(UploadViewModel())
 }

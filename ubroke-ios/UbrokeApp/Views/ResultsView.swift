@@ -70,7 +70,7 @@ struct ResultsView: View {
                     Button(action: { showingMonthPicker = true }) {
                         HStack {
                             Image(systemName: "calendar")
-                                .foregroundColor(.blue)
+                                .foregroundColor(BrandColors.purple)
                             Text(formattedMonth)
                                 .font(.body)
                                 .foregroundColor(.primary)
@@ -93,7 +93,7 @@ struct ResultsView: View {
 
                                 Text("₹\(currentMonthData.total.formatted())")
                                     .font(.system(size: 40, weight: .bold, design: .rounded))
-                                    .foregroundColor(.primary)
+                                    .foregroundStyle(BrandColors.purple)
                             }
 
                             Spacer()
@@ -273,7 +273,7 @@ struct InsightRow: View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: isAlert ? "exclamationmark.triangle.fill" : "lightbulb.fill")
                 .font(.caption)
-                .foregroundColor(isAlert ? .orange : .yellow)
+                .foregroundColor(isAlert ? BrandColors.pink : BrandColors.gold)
             Text(text)
                 .font(.subheadline)
                 .foregroundColor(.secondary)

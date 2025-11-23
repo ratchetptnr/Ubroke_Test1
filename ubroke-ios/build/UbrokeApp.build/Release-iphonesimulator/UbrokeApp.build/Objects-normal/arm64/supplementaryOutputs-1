@@ -1,0 +1,12 @@
+{
+  "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/UbrokeApp.swift" : {
+    "abi-baseline-json" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.abi.json",
+    "const-values" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.swiftconstvalues",
+    "dependencies" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.d",
+    "diagnostics" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-primary.dia",
+    "objc-header" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp-Swift.h",
+    "swiftdoc" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.swiftdoc",
+    "swiftmodule" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.swiftmodule",
+    "swiftsourceinfo" : "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/build/UbrokeApp.build/Release-iphonesimulator/UbrokeApp.build/Objects-normal/arm64/UbrokeApp.swiftsourceinfo"
+  }
+}

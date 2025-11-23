@@ -1,0 +1,80 @@
+{
+  "source": "/Users/praneethpotnuru/Everything/Ubroke_Test1/ubroke-ios/UbrokeApp/Views/TransactionsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Transactions",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add your first expense manually or upload a statement to get started.",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 14
+        }
+      },
+      {
+        "comment": "",
+        "key": "No transactions yet",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Load Demo Data",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Expense",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@, %@, %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "•",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select Month",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 177
+        }
+      }
+    ]
+  },
+  "version": 1
+}

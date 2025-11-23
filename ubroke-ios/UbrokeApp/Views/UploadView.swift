@@ -14,199 +14,14 @@ struct SelectedFile: Identifiable {
     }
 }
 
-struct UploadView: View {
-    let navigateBack: () -> Void
-    let navigateToProcessing: () -> Void
-
-    @State private var selectedFiles: [SelectedFile] = []
-    @State private var showingImagePicker = false
-    @State private var showingDocumentPicker = false
-    @State private var showingCamera = false
-    @State private var selectedItems: [PhotosPickerItem] = []
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                if selectedFiles.isEmpty {
-                    // Empty state
-                    VStack(spacing: 24) {
-                        Spacer()
-
-                        Image(systemName: "doc.text.image")
-                            .font(.system(size: 60))
-                            .foregroundColor(.gray)
-
-                        Text("Add Your Documents")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-
-                        Text("Add bills, receipts, or bank statements to analyze your spending")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-
-                        Spacer()
-                    }
-                } else {
-                    // Files list
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            // Header
-                            HStack {
-                                Text("\(selectedFiles.count) file\(selectedFiles.count == 1 ? "" : "s") selected")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.top, 20)
-
-                            // Files grid
-                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                                ForEach(selectedFiles) { file in
-                                    FileCard(file: file, onRemove: {
-                                        removeFile(file)
-                                    })
-                                }
-                            }
-                            .padding(.horizontal, 20)
-                        }
-                    }
-                }
-
-                Spacer()
-
-                // Action buttons section
-                VStack(spacing: 12) {
-                    // Add more section header
-                    if !selectedFiles.isEmpty {
-                        HStack {
-                            Text("Add More")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 4)
-                    }
-
-                    // Action buttons
-                    HStack(spacing: 12) {
-                        // Camera
-                        Button(action: { showingCamera = true }) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "camera.fill")
-                                    .font(.title2)
-                                Text("Camera")
-                                    .font(.caption)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 20)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                        }
-                        .foregroundColor(.primary)
-
-                        // Photos
-                        Button(action: { showingImagePicker = true }) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "photo.on.rectangle")
-                                    .font(.title2)
-                                Text("Photos")
-                                    .font(.caption)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 20)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                        }
-                        .foregroundColor(.primary)
-
-                        // Files
-                        Button(action: { showingDocumentPicker = true }) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "folder")
-                                    .font(.title2)
-                                Text("Files")
-                                    .font(.caption)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 20)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                        }
-                        .foregroundColor(.primary)
-                    }
-                    .padding(.horizontal, 20)
-
-                    // Analyze button (only show when files selected)
-                    if !selectedFiles.isEmpty {
-                        Button(action: navigateToProcessing) {
-                            HStack {
-                                Image(systemName: "sparkles")
-                                Text("Analyze \(selectedFiles.count) File\(selectedFiles.count == 1 ? "" : "s")")
-                                    .fontWeight(.semibold)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                        }
-                        .padding(.horizontal, 20)
-                    }
-                }
-                .padding(.bottom, 20)
-            }
-            .background(Color(.systemBackground))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: navigateBack) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left")
-                            Text("Back")
-                        }
-                        .foregroundColor(.blue)
-                    }
-                }
-
-                ToolbarItem(placement: .principal) {
-                    Text("Upload Documents")
-                        .font(.headline)
-                }
-            }
-            .photosPicker(
-                isPresented: $showingImagePicker,
-                selection: $selectedItems,
-                maxSelectionCount: 20,
-                matching: .images
-            )
-            .sheet(isPresented: $showingDocumentPicker) {
-                DocumentPicker(onDocumentsPicked: { urls in
-                    addDocuments(urls)
-                })
-            }
-            .fullScreenCover(isPresented: $showingCamera) {
-                CameraPicker(onImageCaptured: { image in
-                    addCameraImage(image)
-                })
-            }
-            .onChange(of: selectedItems) { oldValue, newValue in
-                Task {
-                    for item in newValue {
-                        if let data = try? await item.loadTransferable(type: Data.self),
-                           let image = UIImage(data: data) {
-                            addPhotoLibraryImage(image)
-                        }
-                    }
-                    selectedItems = []
-                }
-            }
-        }
-    }
+// ViewModel for UploadView
+class UploadViewModel: ObservableObject {
+    @Published var selectedFiles: [SelectedFile] = []
+    
+    // Processing State
+    @Published var progress: Double = 0.0
+    @Published var currentStep = 1
+    @Published var isComplete = false
 
     func addCameraImage(_ image: UIImage) {
         let file = SelectedFile(
@@ -240,124 +55,392 @@ struct UploadView: View {
     func removeFile(_ file: SelectedFile) {
         selectedFiles.removeAll { $0.id == file.id }
     }
+    
+    func reset() {
+        selectedFiles = []
+        progress = 0.0
+        currentStep = 1
+        isComplete = false
+    }
+    
+    func startProcessing() {
+        // Reset state if needed
+        progress = 0.0
+        currentStep = 1
+        isComplete = false
+        
+        // Simulate processing
+        withAnimation(.linear(duration: 1.0)) {
+            progress = 25
+            currentStep = 2
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            withAnimation(.linear(duration: 1.0)) {
+                self.progress = 50
+                self.currentStep = 3
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            withAnimation(.linear(duration: 1.0)) {
+                self.progress = 75
+                self.currentStep = 4
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            withAnimation(.linear(duration: 1.0)) {
+                self.progress = 100
+                self.currentStep = 5
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+            withAnimation(.spring()) {
+                self.isComplete = true
+            }
+        }
+    }
 }
 
-// File card component
+struct UploadView: View {
+    var navigateBack: () -> Void
+    var navigateToProcessing: () -> Void
+    var startWithCamera: Bool = false
+    
+    @EnvironmentObject var viewModel: UploadViewModel
+    
+    @State private var showingCamera = false
+    @State private var showingDocumentPicker = false
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // Custom Navigation Bar
+            HStack {
+                Button(action: navigateBack) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .foregroundColor(.blue)
+                }
+                Spacer()
+                Text("Upload Statements")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                Spacer()
+                // Balance the back button
+                Button(action: {}) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .opacity(0)
+                }
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header
+                    VStack(spacing: 8) {
+                        Text("Add Your Statements")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("Upload bank statements or scan receipts to automatically track your expenses.")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                    .padding(.top, 20)
+                    
+                    // Action Buttons
+                    HStack(spacing: 16) {
+                        // Camera Button
+                        Button(action: { showingCamera = true }) {
+                            VStack(spacing: 12) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.blue.opacity(0.1))
+                                        .frame(width: 60, height: 60)
+                                    Image(systemName: "camera.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.blue)
+                                }
+                                Text("Camera")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 20)
+                            .background(Color(.systemBackground))
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+                        }
+                        
+                        // Photos Button
+                        PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                            VStack(spacing: 12) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.purple.opacity(0.1))
+                                        .frame(width: 60, height: 60)
+                                    Image(systemName: "photo.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.purple)
+                                }
+                                Text("Photos")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 20)
+                            .background(Color(.systemBackground))
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+                        }
+                        
+                        // Files Button
+                        Button(action: { showingDocumentPicker = true }) {
+                            VStack(spacing: 12) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.orange.opacity(0.1))
+                                        .frame(width: 60, height: 60)
+                                    Image(systemName: "folder.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.orange)
+                                }
+                                Text("Files")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 20)
+                            .background(Color(.systemBackground))
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // Selected Files List
+                    if !viewModel.selectedFiles.isEmpty {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Selected Files (\(viewModel.selectedFiles.count))")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            
+                            ForEach(viewModel.selectedFiles) { file in
+                                FileCard(file: file) {
+                                    viewModel.removeFile(file)
+                                }
+                            }
+                        }
+                    } else {
+                        // Empty State Hint
+                        VStack(spacing: 12) {
+                            Image(systemName: "arrow.up")
+                                .font(.title)
+                                .foregroundColor(.gray.opacity(0.3))
+                            Text("Select a file to start")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                        .background(Color(.systemGray6).opacity(0.5))
+                        .cornerRadius(16)
+                        .padding(.horizontal)
+                    }
+                }
+                .padding(.bottom, 100)
+            }
+            
+            // Bottom Action Bar
+            if !viewModel.selectedFiles.isEmpty {
+                VStack {
+                    Button(action: {
+                        navigateToProcessing()
+                    }) {
+                        Text("Process \(viewModel.selectedFiles.count) Files")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(Color.blue)
+                            .cornerRadius(16)
+                    }
+                    .padding()
+                }
+                .background(Color(.systemBackground))
+                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: -4)
+            }
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            if startWithCamera && viewModel.selectedFiles.isEmpty {
+                showingCamera = true
+            }
+        }
+        .sheet(isPresented: $showingCamera) {
+            CameraPicker(image: Binding(
+                get: { nil },
+                set: { if let img = $0 { viewModel.addCameraImage(img) } }
+            ))
+        }
+        .sheet(isPresented: $showingDocumentPicker) {
+            DocumentPicker(urls: Binding(
+                get: { [] },
+                set: { viewModel.addDocuments($0) }
+            ))
+        }
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            if let newItem = newItem {
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        viewModel.addPhotoLibraryImage(image)
+                    }
+                }
+            }
+        }
+    }
+}
+
 struct FileCard: View {
     let file: SelectedFile
-    let onRemove: () -> Void
-
+    let onDelete: () -> Void
+    
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            VStack(spacing: 8) {
+        HStack(spacing: 16) {
+            // Icon/Thumbnail
+            ZStack {
                 if let image = file.image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 120)
-                        .clipped()
+                        .frame(width: 50, height: 50)
                         .cornerRadius(8)
+                        .clipped()
                 } else {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(.systemGray6))
-                            .frame(height: 120)
-
-                        Image(systemName: "doc.fill")
-                            .font(.system(size: 40))
-                            .foregroundColor(.blue)
-                    }
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.red.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    Image(systemName: "doc.fill")
+                        .font(.title3)
+                        .foregroundColor(.red)
                 }
-
-                Text(file.name)
-                    .font(.caption)
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(8)
-            .background(Color(.systemGray6).opacity(0.3))
-            .cornerRadius(12)
-
-            // Remove button
-            Button(action: onRemove) {
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(file.name)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                
+                Text(file.type == .photo ? "Image" : "PDF Document")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            Button(action: onDelete) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title3)
-                    .foregroundColor(.red)
-                    .background(Circle().fill(Color.white))
+                    .foregroundColor(.gray.opacity(0.5))
             }
-            .offset(x: 8, y: -8)
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .padding(.horizontal)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(file.name), \(file.type == .photo ? "Image" : "Document")")
+        .accessibilityAction(named: "Delete") {
+            onDelete()
         }
     }
 }
 
-// Native Camera Picker with image return
+// MARK: - Camera Picker
 struct CameraPicker: UIViewControllerRepresentable {
-    let onImageCaptured: (UIImage) -> Void
-    @Environment(\.dismiss) var dismiss
-
+    @Binding var image: UIImage?
+    @Environment(\.dismiss) private var dismiss
+    
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
-        picker.sourceType = .camera
         picker.delegate = context.coordinator
+        picker.sourceType = .camera
         return picker
     }
-
+    
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let parent: CameraPicker
-
+        
         init(_ parent: CameraPicker) {
             self.parent = parent
         }
-
+        
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[.originalImage] as? UIImage {
-                parent.onImageCaptured(image)
+                parent.image = image
             }
             parent.dismiss()
         }
-
+        
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             parent.dismiss()
         }
     }
 }
 
-// Native Document Picker with multiple selection
+// MARK: - Document Picker
 struct DocumentPicker: UIViewControllerRepresentable {
-    let onDocumentsPicked: ([URL]) -> Void
-    @Environment(\.dismiss) var dismiss
-
+    @Binding var urls: [URL]
+    @Environment(\.dismiss) private var dismiss
+    
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf, .image, .png, .jpeg])
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf, .image], asCopy: true)
         picker.delegate = context.coordinator
         picker.allowsMultipleSelection = true
         return picker
     }
-
+    
     func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         let parent: DocumentPicker
-
+        
         init(_ parent: DocumentPicker) {
             self.parent = parent
         }
-
+        
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            parent.onDocumentsPicked(urls)
+            parent.urls = urls
             parent.dismiss()
         }
-
+        
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
             parent.dismiss()
         }
